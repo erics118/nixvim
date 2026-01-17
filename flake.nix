@@ -28,6 +28,18 @@
             # You can use `extraSpecialArgs` to pass additional arguments to your module files
             extraSpecialArgs = {
               # inherit (inputs) foo;
+              helpers = {
+                requireDependencies = config: pluginName: deps: {
+                  assertion =
+                    config.plugins.${pluginName}.enable
+                    -> (inputs.nixpkgs.lib.all (d: config.plugins.${d}.enable) deps);
+                  message = ''
+                    Nixvim Error: '${pluginName}' is enabled but is missing dependencies.
+                    Required plugins: ${inputs.nixpkgs.lib.concatStringsSep ", " deps}
+                    Ensure all of these are set to '.enable = true;'
+                  '';
+                };
+              };
             };
           };
           nvim = nixvim'.makeNixvimWithModule nixvimModule;
