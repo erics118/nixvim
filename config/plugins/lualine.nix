@@ -1,4 +1,19 @@
 {
+  config,
+  helpers,
+  ...
+}:
+let
+  name = "lualine";
+in
+{
+  assertions = [
+    (helpers.requireDependencies config name [
+      "web-devicons"
+      "navic"
+    ])
+  ];
+
   # Enable the lualine plugin
   plugins.lualine = {
     enable = true;
@@ -7,12 +22,12 @@
         icons_enabled = true;
         theme = "catppuccin";
         component_separators = {
-          left = "";
-          right = "";
+          left = "";
+          right = "";
         };
         section_separators = {
-          left = "";
-          right = "";
+          left = "";
+          right = "";
         };
         always_divide_middle = true;
         globalstatus = true;
@@ -23,15 +38,19 @@
         };
       };
       sections = {
-        lualine_a = ["mode"];
-        lualine_b = ["branch" "diff" "diagnostics"];
-        lualine_c = ["searchcount"];
-        lualine_x = ["filetype"];
-        lualine_y = ["progress"];
-        lualine_z = ["location"];
+        lualine_a = [ "mode" ];
+        lualine_b = [
+          "branch"
+          "diff"
+          "diagnostics"
+        ];
+        lualine_c = [ "searchcount" ];
+        lualine_x = [ "filetype" ];
+        lualine_y = [ "progress" ];
+        lualine_z = [ "location" ];
       };
       winbar = {
-        lualine_c = ["navic"];
+        lualine_c = [ "navic" ];
         lualine_x = [
           {
             __unkeyed-1 = {
@@ -63,38 +82,36 @@
     enable = true;
     settings = {
       highlight = true;
-      separator = " ";
+      separator = " ";
       icons = {
-        File = " ";
-        Module = " ";
-        Namespace = " ";
-        Package = " ";
-        Class = " ";
-        Method = " ";
-        Property = " ";
-        Field = " ";
-        Constructor = " ";
-        Enum = " ";
-        Interface = " ";
-        Function = " ";
-        Variable = " ";
-        Constant = " ";
-        String = " ";
-        Number = " ";
-        Boolean = " ";
-        Array = " ";
-        Object = " ";
-        Key = " ";
-        Null = " ";
-        EnumMember = " ";
-        Struct = " ";
-        Event = " ";
-        Operator = " ";
-        TypeParameter = " ";
+        File = " ";
+        Module = " ";
+        Namespace = " ";
+        Package = " ";
+        Class = " ";
+        Method = " ";
+        Property = " ";
+        Field = " ";
+        Constructor = " ";
+        Enum = " ";
+        Interface = " ";
+        Function = " ";
+        Variable = " ";
+        Constant = " ";
+        String = " ";
+        Number = " ";
+        Boolean = " ";
+        Array = " ";
+        Object = " ";
+        Key = " ";
+        Null = " ";
+        EnumMember = " ";
+        Struct = " ";
+        Event = " ";
+        Operator = " ";
+        TypeParameter = " ";
       };
     };
   };
 
-  # Ensure lspconfig is enabled as it is a dependency for navic
-  plugins.lsp.enable = true;
 }

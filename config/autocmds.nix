@@ -27,7 +27,10 @@
 
     # macro recording notifs
     {
-      event = [ "RecordingEnter" "RecordingLeave" ];
+      event = [
+        "RecordingEnter"
+        "RecordingLeave"
+      ];
       callback = {
         __raw = ''
           function(data)
@@ -42,21 +45,34 @@
 
     # smarter relative numbers
     {
-      event = [ "InsertEnter" "BufLeave" "WinLeave" "FocusLost" ];
+      event = [
+        "InsertEnter"
+        "BufLeave"
+        "WinLeave"
+        "FocusLost"
+      ];
       group = "numbertoggle";
       callback = {
         __raw = "function() ft_guard(function() vim.opt_local.rnu = false end) end";
       };
     }
     {
-      event = [ "InsertLeave" "BufEnter" "WinEnter" "FocusGained" ];
+      event = [
+        "InsertLeave"
+        "BufEnter"
+        "WinEnter"
+        "FocusGained"
+      ];
       group = "numbertoggle";
       callback = {
         __raw = "function() ft_guard(function() vim.opt_local.rnu = true end) end";
       };
     }
     {
-      event = [ "CmdlineEnter" "CmdlineLeave" ];
+      event = [
+        "CmdlineEnter"
+        "CmdlineLeave"
+      ];
       group = "numbertoggle";
       callback = {
         __raw = ''

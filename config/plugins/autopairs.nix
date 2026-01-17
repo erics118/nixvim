@@ -7,21 +7,18 @@ let
   name = "nvim-autopairs";
 in
 {
-  # assertions = [
-  #   (helpers.requireDependencies config name [
-  #     "cmp"
-  #     "treesitter"
-  #   ])
-  # ];
-
-  plugins.cmp.enable = true;
+  assertions = [
+    (helpers.requireDependencies config name [
+      "cmp"
+      "treesitter"
+    ])
+  ];
 
   # Enable nvim-autopairs
   plugins.${name} = {
     enable = true;
     settings = {
-      # You can add additional autopairs settings here if needed
-      check_ts = true; # Example: enable treesitter integration
+      check_ts = true; # enable treesitter integration
     };
   };
 

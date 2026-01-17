@@ -1,5 +1,5 @@
 {
-    performance = {
+  performance = {
     byteCompileLua = {
       enable = true;
       configs = true;

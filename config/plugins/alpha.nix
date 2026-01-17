@@ -29,13 +29,12 @@ let
   };
 in
 {
-  # assertions = [
-  #   (helpers.requireDependencies config name [
-  #     "web-devicons"
-  #     "telescope"
-  #   ])
-  # ];
-  # plugins.web-devicons.enable = true;
+  assertions = [
+    (helpers.requireDependencies config name [
+      "web-devicons"
+      "telescope"
+    ])
+  ];
 
   plugins.${name} = {
     enable = true;
@@ -75,27 +74,27 @@ in
         {
           type = "group";
           val = [
-            (mkButton "n" "  New file" ":ene | startinsert<cr>")
+            (mkButton "n" "  New file" ":ene | startinsert<cr>")
             {
               type = "padding";
               val = 1;
             }
-            (mkButton "SPC fd" "  Find file" ":Telescope find_files<cr>")
+            (mkButton "SPC fd" "  Find file" ":Telescope find_files<cr>")
             {
               type = "padding";
               val = 1;
             }
-            (mkButton "SPC fg" "  Live grep" ":Telescope live_grep<cr>")
+            (mkButton "SPC fg" "  Live grep" ":Telescope live_grep<cr>")
             {
               type = "padding";
               val = 1;
             }
-            (mkButton "SPC fp" "  Projects" ":Telescope project<cr>")
+            (mkButton "SPC fp" "  Projects" ":Telescope project<cr>")
             {
               type = "padding";
               val = 1;
             }
-            (mkButton "q" "  Quit" ":qa<cr>")
+            (mkButton "q" "  Quit" ":qa<cr>")
           ];
         }
         {

@@ -1,13 +1,8 @@
 {
-  colorschemes.catppuccin.enable = true;
-  colorscheme = "catppuccin";
-  # defaultEditor = true;
-  # vimDiffAlias = true;
-
-  # lazyLoad.enable = true;
+  # respect .editorconfig files
+  editorconfig.enable = true;
 
   opts = {
-
     # enable mouse support
     mouse = "a";
 
@@ -25,8 +20,8 @@
     # always show status
     laststatus = 3;
 
-    # hide tab line
-    showtabline = 0;
+    # always show tab line (bufferline)
+    showtabline = 2;
 
     # completion height
     pumheight = 15;
@@ -53,6 +48,36 @@
 
     # always show 1 column of sign column (gitsigns, etc.)
     signcolumn = "yes:1";
+
+    # true colors
+    termguicolors = true;
   };
 
+  # Custom border characters (rounded)
+  extraConfigLua = ''
+    vim.g.bc = {
+      style = "rounded",
+      vert = "│",
+      vertleft = "┤",
+      vertright = "├",
+      horiz = "─",
+      horizup = "┴",
+      horizdown = "┬",
+      verthoriz = "┼",
+      topleft = "╭",
+      topright = "╮",
+      botleft = "╰",
+      botright = "╯"
+    }
+
+    vim.opt.fillchars:append({
+      horiz = vim.g.bc.horiz,
+      horizup = vim.g.bc.horizup,
+      horizdown = vim.g.bc.horizdown,
+      vert = vim.g.bc.vert,
+      vertright = vim.g.bc.vertright,
+      vertleft = vim.g.bc.vertleft,
+      verthoriz = vim.g.bc.verthoriz
+    })
+  '';
 }
