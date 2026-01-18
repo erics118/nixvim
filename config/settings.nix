@@ -40,9 +40,9 @@
     iskeyword = "@,48-57,_,192-255";
 
     # tab settings
-    shiftwidth = 4;
-    tabstop = 4;
-    softtabstop = 4;
+    shiftwidth = 2;
+    tabstop = 2;
+    softtabstop = 2;
     expandtab = true;
     smartindent = true;
 
@@ -79,5 +79,20 @@
       vertleft = vim.g.bc.vertleft,
       verthoriz = vim.g.bc.verthoriz
     })
+  '';
+
+  # Per-filetype indentation using vimscript ftplugin
+  extraConfigVim = ''
+    " Disable recommended style overrides
+    let g:yaml_recommended_style = 0
+
+    " 2-space indentation for web/config languages
+    augroup filetype_indent
+      autocmd!
+      autocmd FileType yaml,json,jsonc setlocal shiftwidth=2 tabstop=2 softtabstop=2
+      autocmd FileType javascript,javascriptreact,typescript,typescriptreact setlocal shiftwidth=2 tabstop=2 softtabstop=2
+      autocmd FileType ocaml,html,css,scss setlocal shiftwidth=2 tabstop=2 softtabstop=2
+      autocmd FileType nix,lua setlocal shiftwidth=2 tabstop=2 softtabstop=2
+    augroup END
   '';
 }

@@ -1,32 +1,36 @@
 {
   # define autocmd group
   autoGroups = {
-    numbertoggle = {
-      clear = true;
-    };
+    numbertoggle.clear = true;
   };
 
   autoCmd = [
-    # automatic window resizing
     {
+      desc = "Set 4 space indentation";
+      event = "FileType";
+      pattern = [
+        "cpp"
+        "java"
+        "rust"
+      ];
+      command = "setlocal shiftwidth=4 tabstop=4 softtabstop=4";
+    }
+    {
+      desc = "Automatically resize windows when the host window size changes.";
       event = "VimResized";
       pattern = "*";
       command = "wincmd =";
-      desc = "Automatically resize windows when the host window size changes.";
     }
-
-    # yank highlighting
     {
+      desc = "Highlight yanked text";
       event = "TextYankPost";
       pattern = "*";
       callback = {
         __raw = "function() vim.highlight.on_yank({ higroup = 'IncSearch', timeout = 200 }) end";
       };
-      desc = "Highlight yanked text";
     }
-
-    # macro recording notifs
     {
+      desc = "Notify when recording macro";
       event = [
         "RecordingEnter"
         "RecordingLeave"
@@ -40,11 +44,11 @@
           end
         '';
       };
-      desc = "Notify when recording macro";
     }
 
     # smarter relative numbers
     {
+      desc = "Smarter relative numbers";
       event = [
         "InsertEnter"
         "BufLeave"
@@ -57,6 +61,7 @@
       };
     }
     {
+      desc = "Smarter relative numbers";
       event = [
         "InsertLeave"
         "BufEnter"
@@ -69,6 +74,7 @@
       };
     }
     {
+      desc = "Smarter relative numbers";
       event = [
         "CmdlineEnter"
         "CmdlineLeave"
