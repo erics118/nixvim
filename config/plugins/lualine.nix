@@ -22,12 +22,12 @@ in
         icons_enabled = true;
         theme = "catppuccin";
         component_separators = {
-          left = "";
-          right = "";
+          left = "";
+          right = "";
         };
         section_separators = {
-          left = "";
-          right = "";
+          left = "";
+          right = "";
         };
         always_divide_middle = true;
         globalstatus = true;
