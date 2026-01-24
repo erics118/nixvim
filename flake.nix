@@ -28,7 +28,7 @@
             # You can use `extraSpecialArgs` to pass additional arguments to your module files
             extraSpecialArgs = {
               # inherit (inputs) foo;
-              helpers = {
+              utils = {
                 requireDependencies = config: pluginName: deps: {
                   assertion =
                     config.plugins.${pluginName}.enable

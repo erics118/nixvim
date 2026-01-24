@@ -1,23 +1,21 @@
 {
   config,
   pkgs,
-  helpers,
+  utils,
   ...
 }:
-let
-  name = "treesitter";
-in
+
 {
   assertions = [
-    (helpers.requireDependencies config "treesitter-context" [
+    (utils.requireDependencies config "treesitter-context" [
       "treesitter"
     ])
-    (helpers.requireDependencies config "ts-autotag" [
+    (utils.requireDependencies config "ts-autotag" [
       "treesitter"
     ])
   ];
 
-  plugins.${name} = {
+  plugins.treesitter = {
     enable = true;
     nixGrammars = true; # Use nix-managed grammars
     settings = {

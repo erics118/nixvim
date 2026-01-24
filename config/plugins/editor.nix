@@ -1,7 +1,7 @@
-{ config, helpers, ... }:
+{ config, utils, ... }:
 {
   assertions = [
-    (helpers.requireDependencies config "headlines" [ "treesitter" ])
+    (utils.requireDependencies config "headlines" [ "treesitter" ])
   ];
 
   plugins = {

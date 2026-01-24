@@ -1,7 +1,7 @@
 {
   config,
   pkgs,
-  helpers,
+  utils,
   ...
 }:
 let
@@ -30,7 +30,7 @@ let
 in
 {
   assertions = [
-    (helpers.requireDependencies config name [
+    (utils.requireDependencies config name [
       "web-devicons"
       "telescope"
     ])

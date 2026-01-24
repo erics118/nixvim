@@ -21,7 +21,7 @@
     laststatus = 3;
 
     # always show tab line (bufferline)
-    showtabline = 2;
+    showtabline = 0;
 
     # completion height
     pumheight = 15;

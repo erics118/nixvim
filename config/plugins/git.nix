@@ -1,14 +1,14 @@
 {
   config,
-  helpers,
+  utils,
   ...
 }:
 {
   assertions = [
-    (helpers.requireDependencies config "neogit" [
+    (utils.requireDependencies config "neogit" [
       "diffview"
     ])
-    (helpers.requireDependencies config "gitsigns" [
+    (utils.requireDependencies config "gitsigns" [
       "which-key"
     ])
   ];

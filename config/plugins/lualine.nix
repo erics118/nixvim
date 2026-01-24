@@ -1,6 +1,6 @@
 {
   config,
-  helpers,
+  utils,
   ...
 }:
 let
@@ -8,7 +8,7 @@ let
 in
 {
   assertions = [
-    (helpers.requireDependencies config name [
+    (utils.requireDependencies config name [
       "web-devicons"
       "navic"
     ])
