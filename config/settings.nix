@@ -21,7 +21,7 @@
     laststatus = 3;
 
     # always show tab line (bufferline)
-    showtabline = 0;
+    showtabline = 2;
 
     # completion height
     pumheight = 15;
@@ -81,18 +81,7 @@
     })
   '';
 
-  # Per-filetype indentation using vimscript ftplugin
   extraConfigVim = ''
-    " Disable recommended style overrides
     let g:yaml_recommended_style = 0
-
-    " 2-space indentation for web/config languages
-    augroup filetype_indent
-      autocmd!
-      autocmd FileType yaml,json,jsonc setlocal shiftwidth=2 tabstop=2 softtabstop=2
-      autocmd FileType javascript,javascriptreact,typescript,typescriptreact setlocal shiftwidth=2 tabstop=2 softtabstop=2
-      autocmd FileType ocaml,html,css,scss setlocal shiftwidth=2 tabstop=2 softtabstop=2
-      autocmd FileType nix,lua setlocal shiftwidth=2 tabstop=2 softtabstop=2
-    augroup END
   '';
 }

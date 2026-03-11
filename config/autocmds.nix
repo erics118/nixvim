@@ -1,3 +1,6 @@
+let
+  ignoredUiFiletypes = import ./shared/ignored-ui-filetypes.nix;
+in
 {
   # define autocmd group
   autoGroups = {
@@ -6,11 +9,25 @@
 
   autoCmd = [
     {
+      desc = "Enable spell checking for prose, tex, gitcommit";
+      event = "FileType";
+      pattern = [
+        "tex"
+        "markdown"
+        "mdx"
+        "markdown.mdx"
+        "gitcommit"
+      ];
+      command = "setlocal spell spelllang=en_us";
+    }
+    {
       desc = "Set 4 space indentation";
       event = "FileType";
       pattern = [
+        "c"
         "cpp"
         "java"
+        "python"
         "rust"
       ];
       command = "setlocal shiftwidth=4 tabstop=4 softtabstop=4";
@@ -41,6 +58,29 @@
             local msg = data.event == "RecordingEnter" and "Recording macro..."
               or "Macro recorded"
             vim.notify(msg, vim.log.levels.INFO, { title = "Macro" })
+          end
+        '';
+      };
+    }
+
+    {
+      desc = "Disable line numbers in floating windows";
+      event = "WinEnter";
+      callback = {
+        __raw = ''
+          function()
+            if vim.api.nvim_win_get_config(0).relative ~= "" then
+              local show_number = vim.bo.buftype == "nofile"
+                and vim.bo.filetype == "markdown"
+                and vim.api.nvim_buf_line_count(0) > 10
+              vim.wo.number = show_number
+              vim.wo.relativenumber = false
+              vim.wo.scrolloff = 0
+              if vim.bo.buftype == "nofile" and vim.bo.filetype == "markdown" then
+                vim.wo.conceallevel = 0
+                vim.wo.concealcursor = ""
+              end
+            end
           end
         '';
       };
@@ -96,21 +136,13 @@
   # helper logic for numbertoggle
   extraConfigLua = ''
     local ignore_ft = {
-      "",
-      "alpha",
-      "fugitive",
-      "help",
-      "lazy",
-      "NeogitCommitView",
-      "NeogitConsole",
-      "NeogitStatus",
-      "NvimTree",
-      "TelescopePrompt",
-      "toggleterm",
-      "Trouble",
+      ${builtins.concatStringsSep ",\n      " (builtins.map builtins.toJSON ignoredUiFiletypes)}
     }
 
-    local ft_guard = function(callback)
+    ft_guard = function(callback)
+      if vim.api.nvim_win_get_config(0).relative ~= "" then
+        return
+      end
       if not vim.tbl_contains(ignore_ft, vim.bo.filetype) then
         callback()
       end

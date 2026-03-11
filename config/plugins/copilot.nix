@@ -1,6 +1,7 @@
 {
   plugins.copilot-lua = {
     enable = true;
+    lazyLoad.settings.event = "InsertEnter";
 
     settings = {
       panel = {
@@ -26,7 +27,6 @@
         "." = false;
       };
       copilot_node_command = "node";
-      server_opts_overrides = { };
     };
   };
 }

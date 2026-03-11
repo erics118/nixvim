@@ -1,0 +1,14 @@
+[
+  ""
+  "alpha"
+  "fugitive"
+  "help"
+  "lazy"
+  "NeogitCommitView"
+  "NeogitConsole"
+  "NeogitStatus"
+  "NvimTree"
+  "TelescopePrompt"
+  "toggleterm"
+  "Trouble"
+]

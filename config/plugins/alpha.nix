@@ -89,11 +89,6 @@ in
               type = "padding";
               val = 1;
             }
-            (mkButton "SPC fp" "  Projects" ":Telescope project<cr>")
-            {
-              type = "padding";
-              val = 1;
-            }
             (mkButton "q" "  Quit" ":qa<cr>")
           ];
         }

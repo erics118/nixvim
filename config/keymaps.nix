@@ -41,18 +41,15 @@ in
     ]
     # Diff/merge
     ++ [
-      {
-        mode = "n";
-        key = "gd";
-        action = ":diffget";
-        options.noremap = true;
-        options.silent = true;
-      }
       (map "n" "gdh" ":diffget //2<CR>" "Get diff from left (ours)")
       (map "n" "gdl" ":diffget //3<CR>" "Get diff from right (theirs)")
     ]
     # Terminal
     ++ [ (map "t" "<Esc>" "<C-\\><C-n>" "Exit terminal mode") ]
+    # Clear search highlight
+    ++ [ (map "n" "<Esc>" ":nohlsearch<CR>" "Clear search highlight") ]
+    # Search and replace
+    ++ [ (map "n" "<leader>sr" "<cmd>GrugFar<CR>" "Search and replace") ]
     # Centered scrolling/search
     ++ [
       (map "n" "<C-d>" "<C-d>zz" "Scroll down and center")

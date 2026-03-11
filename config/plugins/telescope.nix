@@ -15,6 +15,7 @@ in
 
   plugins.${name} = {
     enable = true;
+    lazyLoad.settings.cmd = "Telescope";
     settings = {
       defaults = {
         prompt_prefix = " ";
@@ -126,6 +127,14 @@ in
       };
       options = {
         desc = "Find in config";
+      };
+    }
+    {
+      mode = "n";
+      key = "<leader>ft";
+      action = "<cmd>TodoTelescope<cr>";
+      options = {
+        desc = "Search TODOs";
       };
     }
   ];

@@ -20,30 +20,7 @@
     };
   };
 
-  # Clipboard and misc keymaps via which-key
   keymaps = [
-    {
-      mode = [
-        "n"
-        "v"
-      ];
-      key = "<leader>p";
-      action = ''"+p'';
-      options = {
-        desc = "Paste from system clipboard";
-      };
-    }
-    {
-      mode = [
-        "n"
-        "v"
-      ];
-      key = "<leader>y";
-      action = ''"+y'';
-      options = {
-        desc = "Yank to system clipboard";
-      };
-    }
     {
       mode = [
         "n"

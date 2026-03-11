@@ -15,6 +15,14 @@ in
 
   plugins.${name} = {
     enable = true;
+    lazyLoad.settings.cmd = [
+      "NvimTreeToggle"
+      "NvimTreeFocus"
+      "NvimTreeFindFile"
+      "NvimTreeFindFileToggle"
+      "NvimTreeOpen"
+      "NvimTreeClose"
+    ];
     settings = {
       renderer = {
         indent_markers = {

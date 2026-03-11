@@ -1,4 +1,6 @@
 {
+  plugins.lz-n.enable = true;
+
   performance = {
     byteCompileLua = {
       enable = true;

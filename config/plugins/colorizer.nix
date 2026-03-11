@@ -1,6 +1,10 @@
 {
   plugins.colorizer = {
     enable = true;
+    lazyLoad.settings.event = [
+      "BufReadPre"
+      "BufNewFile"
+    ];
     settings = {
       filetypes = {
         __unkeyed-1 = "*";

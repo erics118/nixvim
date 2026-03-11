@@ -6,10 +6,20 @@
 
   plugins = {
     flash.enable = true;
-    todo-comments.enable = true;
+    todo-comments = {
+      enable = true;
+      lazyLoad.settings.event = "BufReadPost";
+    };
     nvim-surround.enable = true;
-    comment.enable = true;
-    headlines.enable = true;
+    headlines = {
+      enable = true;
+      lazyLoad.settings.ft = [
+        "markdown"
+        "norg"
+        "rmd"
+        "org"
+      ];
+    };
   };
 
   # Keymaps for flash

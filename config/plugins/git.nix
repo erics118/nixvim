@@ -14,11 +14,30 @@
   ];
 
   # Fugitive - git commands
-  plugins.fugitive.enable = true;
+  plugins.fugitive = {
+    enable = true;
+    lazyLoad.settings.cmd = [
+      "Git"
+      "G"
+      "Gdiffsplit"
+      "Gvdiffsplit"
+      "Gvdiff"
+      "Gwrite"
+      "Gread"
+      "Gclog"
+      "Ggrep"
+      "GMove"
+      "GDelete"
+      "GBrowse"
+      "GRemove"
+      "GRename"
+    ];
+  };
 
   # Neogit - magit-like git interface
   plugins.neogit = {
     enable = true;
+    lazyLoad.settings.cmd = "Neogit";
     settings = {
       integrations = {
         diffview = true;
@@ -27,7 +46,17 @@
   };
 
   # Diffview for neogit
-  plugins.diffview.enable = true;
+  plugins.diffview = {
+    enable = true;
+    lazyLoad.settings.cmd = [
+      "DiffviewOpen"
+      "DiffviewClose"
+      "DiffviewToggleFiles"
+      "DiffviewFocusFiles"
+      "DiffviewFileHistory"
+      "DiffviewRefresh"
+    ];
+  };
 
   # Gitsigns - git decorations
   plugins.gitsigns = {

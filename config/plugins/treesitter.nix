@@ -30,14 +30,6 @@
     grammarPackages = pkgs.vimPlugins.nvim-treesitter.allGrammars;
   };
 
-  # Treesitter context - shows function context at top of window
-  plugins.treesitter-context = {
-    enable = true;
-    settings = {
-      mode = "topline";
-    };
-  };
-
   # Auto-close/rename HTML tags
   plugins.ts-autotag = {
     enable = true;

@@ -3,11 +3,6 @@
     enable = true;
     settings = {
       transparent_background = false;
-      dim_inactive = {
-        enabled = false;
-        shade = "dark";
-        percentage = 0.15;
-      };
       styles = {
         comments = [ "italic" ];
         conditionals = [ "italic" ];
@@ -39,10 +34,7 @@
           enabled = true;
           colored_indent_levels = true;
         };
-        navic = {
-          enabled = true;
-          custom_bg = "NONE";
-        };
+        bufferline = true;
         gitsigns = true;
         markdown = true;
         neogit = true;
@@ -53,8 +45,9 @@
           __raw = ''
             function(colors)
               return {
-                -- borders
-                FloatBorder = { fg = colors.overlay0 },
+                -- floats
+                NormalFloat = { bg = colors.surface0 },
+                FloatBorder = { fg = colors.overlay0, bg = colors.surface0 },
                 LspInfoBorder = { link = "FloatBorder" },
                 NvimTreeWinSeparator = { link = "FloatBorder" },
                 WhichKeyBorder = { link = "FloatBorder" },
