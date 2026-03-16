@@ -162,6 +162,12 @@ in
     ocamllsp = {
       enable = true;
       package = null;
+      cmd = [
+        "opam"
+        "exec"
+        "--"
+        "ocamllsp"
+      ];
       extraOptions = {
         settings = {
           inlayHints = {
