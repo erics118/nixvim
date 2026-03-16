@@ -143,6 +143,12 @@ in
     dockerls = projectServer;
     taplo = projectServer; # TOML
 
+    # Markdown
+    # we install this one so it works globally
+    marksman = {
+      enable = true;
+    };
+
     # Shell
     bashls = projectServer;
 

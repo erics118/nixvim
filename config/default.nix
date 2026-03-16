@@ -1,4 +1,10 @@
+{ pkgs, ... }:
 {
+  extraPackages = [
+    # only for markdown formatting
+    pkgs.nodePackages.prettier
+  ];
+
   imports = [
     ./settings.nix
     ./keymaps.nix
