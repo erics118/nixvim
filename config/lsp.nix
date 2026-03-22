@@ -158,16 +158,10 @@ in
     # Lua
     lua_ls = projectServer;
 
-    # OCaml - use project's ocamllsp (from opam/devshell) to avoid version mismatch
+    # OCaml
     ocamllsp = {
       enable = true;
       package = null;
-      cmd = [
-        "opam"
-        "exec"
-        "--"
-        "ocamllsp"
-      ];
       extraOptions = {
         settings = {
           inlayHints = {
@@ -360,6 +354,18 @@ in
 
   # Attach inlay hints and codelens on LSP attach
   extraConfigLua = ''
+    -- Keep ocamllsp inside the project direnv/Nix environment so dune, Merlin,
+    -- and the language server agree on the active toolchain.
+    vim.lsp.config("ocamllsp", {
+      cmd = function(dispatchers, config)
+        local root = config.root_dir or vim.fn.getcwd()
+        if vim.fn.executable("direnv") == 1 then
+          return vim.lsp.rpc.start({ "direnv", "exec", root, "ocamllsp" }, dispatchers)
+        end
+        return vim.lsp.rpc.start({ "ocamllsp" }, dispatchers)
+      end,
+    })
+
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("UserLspConfig", {}),
       callback = function(ev)
