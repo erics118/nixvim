@@ -196,9 +196,16 @@ in
       cmd = [
         "clangd"
         "--inlay-hints=true"
+        "--background-index"
         "--clang-tidy"
         "--enable-config"
-        "--experimental-modules-support"
+        "--header-insertion=iwyu"
+        "--header-insertion-decorators"
+        "--all-scopes-completion"
+        "--completion-style=detailed"
+        "-j=8"
+        "--compile-commands-dir=build"
+        "--query-driver=/nix/store/*/bin/clang++"
       ];
     };
 
