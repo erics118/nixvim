@@ -17,5 +17,5 @@ check:
     nix flake check .
 
 # run nixvim
-run:
-    nix run .
+run *args:
+    nix run . -- {{args}}
