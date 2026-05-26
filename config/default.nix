@@ -1,7 +1,8 @@
 { pkgs, ... }:
 {
   extraPackages = [
-    # only for markdown formatting
+    # only for markdown
+    pkgs.marksman
     pkgs.nodePackages.prettier
   ];
 

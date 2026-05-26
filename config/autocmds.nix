@@ -9,9 +9,19 @@ in
 
   autoCmd = [
     {
+      desc = "Treat SSH config.local as sshconfig";
+      event = [
+        "BufNewFile"
+        "BufRead"
+      ];
+      pattern = "*/.ssh/config.local";
+      command = "setfiletype sshconfig";
+    }
+    {
       desc = "Enable spell checking for prose, tex, gitcommit";
       event = "FileType";
       pattern = [
+        "text"
         "tex"
         "markdown"
         "mdx"
@@ -19,6 +29,49 @@ in
         "gitcommit"
       ];
       command = "setlocal spell spelllang=en_us";
+    }
+    {
+      desc = "Enable word wrap for prose and LaTeX";
+      event = "FileType";
+      pattern = [
+        "text"
+        "tex"
+        "markdown"
+        "mdx"
+        "markdown.mdx"
+      ];
+      command = "setlocal wrap linebreak breakindent";
+    }
+    {
+      desc = "Open nvim-tree on startup";
+      event = "VimEnter";
+      once = true;
+      callback = {
+        __raw = ''
+          function(data)
+            if vim.o.diff then
+              return
+            end
+
+            if vim.fn.argc(-1) == 0 then
+              vim.cmd("NvimTreeOpen")
+              return
+            end
+
+            if vim.fn.isdirectory(data.file) == 1 then
+              vim.cmd("NvimTreeOpen")
+              return
+            end
+
+            if vim.bo[data.buf].buftype ~= "" then
+              return
+            end
+
+            vim.cmd("NvimTreeOpen")
+            vim.cmd("wincmd p")
+          end
+        '';
+      };
     }
     {
       desc = "Set 4 space indentation";
