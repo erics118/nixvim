@@ -5,6 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nixvim.url = "github:nix-community/nixvim";
     flake-parts.url = "github:hercules-ci/flake-parts";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
   outputs =
@@ -15,6 +16,10 @@
         "aarch64-linux"
         "x86_64-darwin"
         "aarch64-darwin"
+      ];
+
+      imports = [
+        inputs.treefmt-nix.flakeModule
       ];
 
       perSystem =
@@ -53,6 +58,14 @@
           packages = {
             # Lets you run `nix run .` to start nixvim
             default = nvim;
+          };
+
+          treefmt = {
+            projectRootFile = "flake.nix";
+            programs = {
+              nixfmt.enable = true;
+              stylua.enable = true;
+            };
           };
         };
     };

@@ -8,9 +8,9 @@ default:
 update:
 	nix flake update
 
-# format nix files
+# format the repo
 fmt:
-	find . -type f -name "*.nix" -exec nixfmt {} \;
+	nix fmt
 
 # check flake
 check:
