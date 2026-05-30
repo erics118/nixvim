@@ -1,9 +1,15 @@
 { pkgs, ... }:
 {
-  extraPackages = [
-    # only for markdown
-    pkgs.marksman
-    pkgs.nodePackages.prettier
+  extraPackages = with pkgs; [
+    # markdown, json, etc, globally
+    nodePackages.prettier
+
+    # nvim-lint linters
+    statix
+    deadnix
+    shellcheck
+    hadolint
+    markdownlint-cli2
   ];
 
   imports = [
@@ -28,6 +34,7 @@
     ./plugins/fidget.nix
     ./plugins/git.nix
     ./plugins/indent-blankline.nix
+    ./plugins/lint.nix
     ./plugins/lualine.nix
     ./plugins/latex.nix
     ./plugins/notify.nix

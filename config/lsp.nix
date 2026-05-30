@@ -1,39 +1,5 @@
-{ lib, ... }:
+{ ... }:
 let
-  # Kubernetes resource types for YAML schema
-  k8sResources = [
-    "clusterrole"
-    "clusterrolebinding"
-    "configmap"
-    "cronjob"
-    "daemonset"
-    "deployment"
-    "hpa"
-    "ingress"
-    "job"
-    "namespace"
-    "pvc"
-    "rbac"
-    "replicaset"
-    "role"
-    "rolebinding"
-    "secret"
-    "service"
-    "serviceaccount"
-    "statefulset"
-  ];
-  k8sPatterns =
-    lib.concatMap (r: [
-      "${r}.yaml"
-      "${r}.yml"
-    ]) k8sResources
-    ++ [
-      "*-deployment.yaml"
-      "*-deployment.yml"
-      "*-service.yaml"
-      "*-service.yml"
-    ];
-
   # Helper for LSP keymaps (lua action)
   lspMap = key: action: desc: {
     mode = "n";
@@ -58,9 +24,14 @@ let
     };
   };
 
+  # version tied to toolchain, binary comes from PATH/devshell
   projectServer = {
     enable = true;
     package = null;
+  };
+  # stable version, nixvim installs the binary
+  ambientServer = {
+    enable = true;
   };
 in
 {
@@ -84,17 +55,13 @@ in
     nextls = projectServer;
 
     # TypeScript/JavaScript linting
-    eslint = {
-      enable = true;
-      package = null;
+    eslint = projectServer // {
       settings.workingDirectories.mode = "auto";
     };
 
     # Data formats
-    jsonls = projectServer;
-    texlab = {
-      enable = true;
-      package = null;
+    jsonls = ambientServer;
+    texlab = projectServer // {
       settings.texlab = {
         build = {
           executable = "latexmk";
@@ -116,9 +83,7 @@ in
         latexFormatter = "latexindent";
       };
     };
-    yamlls = {
-      enable = true;
-      package = null;
+    yamlls = ambientServer // {
       settings = {
         yaml = {
           completion = true;
@@ -129,10 +94,8 @@ in
             "https://json.schemastore.org/github-workflow" = ".github/workflows/*";
             "https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json" =
               "*lab-ci.{yaml,yml}";
-            "https://json.schemastore.org/helmfile" = "helmfile.{yaml,yml}";
             "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json" =
               "docker-compose.{yml,yaml}";
-            kubernetes = k8sPatterns;
           };
         };
         redhat.telemetry.enabled = false;
@@ -141,16 +104,19 @@ in
 
     # DevOps
     dockerls = projectServer;
-    taplo = projectServer; # TOML
+    taplo = ambientServer;
 
     # Markdown
-    # we install this one so it works globally
-    marksman = {
-      enable = true;
-    };
+    marksman = ambientServer;
+
+    # Grammar/spell checking for LaTeX and Markdown
+    ltex = ambientServer;
 
     # Shell
-    bashls = projectServer;
+    bashls = ambientServer;
+
+    # Spell-check across all buffers
+    typos_lsp = ambientServer;
 
     # Go
     gopls = projectServer;
@@ -159,9 +125,7 @@ in
     lua_ls = projectServer;
 
     # OCaml
-    ocamllsp = {
-      enable = true;
-      package = null;
+    ocamllsp = projectServer // {
       extraOptions = {
         settings = {
           inlayHints = {
@@ -182,17 +146,24 @@ in
     nixd = projectServer;
 
     # Python
-    pyright = projectServer;
+    pyright = projectServer; # types
+    ruff = projectServer; # lint + code actions
 
     # Java
     jdtls = projectServer;
 
+    # Zig
+    zls = projectServer;
+
+    # Haskell
+    hls = projectServer;
+
+    # Elixir (nextls already enabled above for web)
+
     # C/C++
     cmake = projectServer;
 
-    clangd = {
-      enable = true;
-      package = null;
+    clangd = projectServer // {
       cmd = [
         "clangd"
         "--inlay-hints=true"
@@ -207,9 +178,7 @@ in
       ];
     };
 
-    rust_analyzer = {
-      enable = true;
-      package = null;
+    rust_analyzer = projectServer // {
       installCargo = false;
       installRustc = false;
       settings.rust-analyzer = {
@@ -359,6 +328,16 @@ in
 
   # Attach inlay hints and codelens on LSP attach
   extraConfigLua = ''
+    local function is_file_backed_buffer(bufnr)
+      local name = vim.api.nvim_buf_get_name(bufnr)
+      if name == "" or vim.bo[bufnr].buftype ~= "" then
+        return false
+      end
+
+      local uri = vim.uri_from_bufnr(bufnr)
+      return uri ~= nil and vim.startswith(uri, "file://")
+    end
+
     -- Keep ocamllsp inside the project direnv/Nix environment so dune, Merlin,
     -- and the language server agree on the active toolchain.
     vim.lsp.config("ocamllsp", {
@@ -375,7 +354,10 @@ in
       group = vim.api.nvim_create_augroup("UserLspConfig", {}),
       callback = function(ev)
         local client = vim.lsp.get_client_by_id(ev.data.client_id)
-        if client.server_capabilities.inlayHintProvider then
+        if client
+          and client.server_capabilities.inlayHintProvider
+          and is_file_backed_buffer(ev.buf)
+        then
           vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
         end
         if client.server_capabilities.codeLensProvider then
