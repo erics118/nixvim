@@ -24,7 +24,7 @@
         hgcommit = false;
         svn = false;
         cvs = false;
-        "." = false;
+        "." = true;
       };
       copilot_node_command = "node";
     };
