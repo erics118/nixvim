@@ -19,7 +19,6 @@
         sh = [ "shfmt" ];
         bash = [ "shfmt" ];
         zsh = [ "shfmt" ];
-        fish = [ "fish_indent" ];
 
         javascript = [ "prettier" ];
         javascriptreact = [ "prettier" ];
@@ -27,21 +26,33 @@
         typescriptreact = [ "prettier" ];
         astro = [ "prettier" ];
         css = [ "prettier" ];
+        scss = [ "prettier" ];
+        less = [ "prettier" ];
         html = [ "prettier" ];
+        graphql = [ "prettier" ];
+        vue = [ "prettier" ];
+        svelte = [ "prettier" ];
         json = [ "prettier" ];
         jsonc = [ "prettier" ];
         yaml = [ "prettier" ];
         markdown = [ "prettier" ];
 
         toml = [ "taplo" ];
+        just = [ "just" ];
         cmake = [ "gersemi" ];
-        python = [ "black" ];
+        python = [
+          "ruff_format"
+          "ruff_organize_imports"
+        ];
         go = [ "gofmt" ];
         rust = [ "rustfmt" ];
         tex = [ "latexindent" ];
         ocaml = [ "ocamlformat" ];
         c = [ "clang_format" ];
         cpp = [ "clang_format" ];
+        zig = [ "zigfmt" ];
+        haskell = [ "fourmolu" ];
+        elixir = [ "mix" ];
       };
     };
   };
