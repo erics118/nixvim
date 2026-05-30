@@ -55,17 +55,20 @@
 
   # Custom border characters (rounded)
   extraConfigLua = ''
-    vim.g.clipboard = {
-      name = 'OSC 52',
-      copy = {
-        ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-        ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-      },
-      paste = {
-        ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-        ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-      },
-    }
+    -- only override clipboard provider over SSH; locally use pbcopy/pbpaste (or xclip)
+    if vim.env.SSH_TTY ~= nil then
+      vim.g.clipboard = {
+        name = 'OSC 52',
+        copy = {
+          ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+          ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+        },
+        paste = {
+          ['+'] = function() return { vim.fn.split(vim.fn.getreg('"'), '\n'), vim.fn.getregtype('"') } end,
+          ['*'] = function() return { vim.fn.split(vim.fn.getreg('"'), '\n'), vim.fn.getregtype('"') } end,
+        },
+      }
+    end
 
     vim.g.bc = {
       style = "rounded",

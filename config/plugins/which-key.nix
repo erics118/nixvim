@@ -27,7 +27,7 @@
         "v"
       ];
       key = "<leader>gd";
-      action = "<cmd>Gvdiff!<CR>";
+      action = "<cmd>Gvdiff<CR>";
       options = {
         desc = "Git diff";
       };
