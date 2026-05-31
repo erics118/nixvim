@@ -1,5 +1,8 @@
 { pkgs, ... }:
 {
+  vimAlias = true;
+  viAlias = true;
+
   extraPackages = with pkgs; [
     # markdown, json, etc, globally
     prettier
