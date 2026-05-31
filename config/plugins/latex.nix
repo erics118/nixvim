@@ -5,6 +5,9 @@
 
   plugins.vimtex = {
     enable = true;
+
+    texlivePackage = null;
+
     lazyLoad.settings.ft = [
       "tex"
     ];

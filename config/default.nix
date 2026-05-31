@@ -2,7 +2,7 @@
 {
   extraPackages = with pkgs; [
     # markdown, json, etc, globally
-    nodePackages.prettier
+    prettier
 
     # nvim-lint linters
     statix
