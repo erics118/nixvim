@@ -35,6 +35,7 @@
           colored_indent_levels = true;
         };
         bufferline = true;
+        lualine = true;
         gitsigns = true;
         markdown = true;
         neogit = true;
