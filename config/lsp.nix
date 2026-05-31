@@ -109,9 +109,6 @@ in
     # Markdown
     marksman = ambientServer;
 
-    # Grammar/spell checking for LaTeX and Markdown
-    ltex = ambientServer;
-
     # Shell
     bashls = ambientServer;
 
