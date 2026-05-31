@@ -156,7 +156,9 @@ in
     zls = projectServer;
 
     # Haskell
-    hls = projectServer;
+    hls = projectServer // {
+      installGhc = false;
+    };
 
     # Elixir (nextls already enabled above for web)
 
