@@ -1,28 +1,11 @@
-{ ... }:
+{ utils, ... }:
 let
-  # Helper for LSP keymaps (lua action)
-  lspMap = key: action: desc: {
-    mode = "n";
-    inherit key;
-    action = "<cmd>lua ${action}<CR>";
-    options = {
-      noremap = true;
-      silent = true;
-      inherit desc;
-    };
-  };
+  inherit (utils) mkMap;
 
-  # Helper for command keymaps (non-lua)
-  cmdMap = key: action: desc: {
-    mode = "n";
-    inherit key;
-    action = "<cmd>${action}<CR>";
-    options = {
-      noremap = true;
-      silent = true;
-      inherit desc;
-    };
-  };
+  # Normal-mode keymap wrapping a lua expression as a function callback
+  lspMap =
+    key: action: desc:
+    mkMap "n" key { __raw = "function() ${action} end"; } desc;
 
   # version tied to toolchain, binary comes from PATH/devshell
   projectServer = {
@@ -74,13 +57,28 @@ in
           onSave = true;
           forwardSearchAfter = false;
         };
+        forwardSearch = {
+          executable = "sioyek";
+          args = [
+            "--reuse-window"
+            "--execute-command"
+            "toggle_synctex"
+            "--inverse-search"
+            "nvim --headless -c \"VimtexInverseSearch %2 '%1'\""
+            "--forward-search-file"
+            "%f"
+            "--forward-search-line"
+            "%l"
+            "%p"
+          ];
+        };
         chktex = {
           onEdit = true;
           onOpenAndSave = true;
         };
         diagnosticsDelay = 300;
         formatterLineLength = 100;
-        latexFormatter = "latexindent";
+        latexFormatter = "none";
       };
     };
     yamlls = ambientServer // {
@@ -155,6 +153,9 @@ in
     # Haskell
     hls = projectServer // {
       installGhc = false;
+      settings.haskell = {
+        formattingProvider = "fourmolu";
+      };
     };
 
     # Elixir (nextls already enabled above for web)
@@ -288,7 +289,7 @@ in
   keymaps = [
     (lspMap "gD" "vim.lsp.buf.declaration()" "Go to declaration")
     (lspMap "gd" "vim.lsp.buf.definition()" "Go to definition")
-    (lspMap "K" "vim.lsp.buf.hover()" "Hover documentation")
+    (lspMap "K" "vim.lsp.buf.hover({ max_width = 80, max_height = 20 })" "Hover documentation")
     (lspMap "gi" "vim.lsp.buf.implementation()" "Go to implementation")
     (lspMap "<leader>k" "vim.lsp.buf.signature_help()" "Signature help")
     (lspMap "<leader>D" "vim.lsp.buf.type_definition()" "Type definition")
@@ -298,25 +299,20 @@ in
     (lspMap "]d" "vim.diagnostic.goto_next()" "Next diagnostic")
     (lspMap "[d" "vim.diagnostic.goto_prev()" "Previous diagnostic")
     (lspMap "<leader>e" "vim.diagnostic.open_float()" "Open diagnostic float")
-    (lspMap "<leader>ih"
+    (lspMap "<leader>ti"
       "local bufnr = 0; local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }); vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr }); vim.notify('Inlay hints: ' .. (enabled and 'OFF' or 'ON'), vim.log.levels.INFO)"
       "Toggle inlay hints"
     )
     (lspMap "<leader>wa" "vim.lsp.buf.add_workspace_folder()" "Add workspace folder")
     (lspMap "<leader>wr" "vim.lsp.buf.remove_workspace_folder()" "Remove workspace folder")
-    {
-      mode = [
-        "n"
-        "v"
-      ];
-      key = "<leader>ca";
-      action = "<cmd>lua vim.lsp.buf.code_action()<CR>";
-      options.desc = "Code action";
-    }
-    (cmdMap "<leader>xx" "Trouble diagnostics toggle" "Trouble diagnostics")
-    (cmdMap "<leader>xd" "Trouble lsp_definitions" "Trouble LSP definitions")
-    (cmdMap "<leader>xq" "Trouble quickfix" "Trouble quickfix")
-    (cmdMap "<leader>xl" "Trouble loclist" "Trouble location list")
+    (mkMap [ "n" "v" ] "<leader>ca" {
+      __raw = "function() vim.lsp.buf.code_action() end";
+    } "Code action")
+    (mkMap "n" "<leader>xx" "<cmd>Trouble diagnostics toggle<CR>" "Trouble diagnostics")
+    (mkMap "n" "<leader>xd" "<cmd>Trouble lsp_definitions<CR>" "Trouble LSP definitions")
+    (mkMap "n" "<leader>xq" "<cmd>Trouble quickfix<CR>" "Trouble quickfix")
+    (mkMap "n" "<leader>xl" "<cmd>Trouble loclist<CR>" "Trouble location list")
+    (mkMap "n" "<leader>lv" "<cmd>TexlabForward<CR>" "LaTeX forward search")
   ];
 
   plugins.trouble = {
@@ -337,18 +333,6 @@ in
       return uri ~= nil and vim.startswith(uri, "file://")
     end
 
-    -- Keep ocamllsp inside the project direnv/Nix environment so dune, Merlin,
-    -- and the language server agree on the active toolchain.
-    vim.lsp.config("ocamllsp", {
-      cmd = function(dispatchers, config)
-        local root = config.root_dir or vim.fn.getcwd()
-        if vim.fn.executable("direnv") == 1 then
-          return vim.lsp.rpc.start({ "direnv", "exec", root, "ocamllsp" }, dispatchers)
-        end
-        return vim.lsp.rpc.start({ "ocamllsp" }, dispatchers)
-      end,
-    })
-
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("UserLspConfig", {}),
       callback = function(ev)
@@ -359,61 +343,22 @@ in
         then
           vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
         end
-        if client.server_capabilities.codeLensProvider then
-          vim.lsp.codelens.refresh({ bufnr = ev.buf })
-        end
       end,
     })
-
-    vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
-      local merged_config = vim.tbl_extend("force", {
-        border = "rounded",
-        max_width = 80,
-        max_height = 20,
-      }, config or {})
-
-      local bufnr, winnr = vim.lsp.handlers.hover(err, result, ctx, merged_config)
-      if winnr and vim.api.nvim_win_is_valid(winnr) then
-        vim.schedule(function()
-          if not vim.api.nvim_win_is_valid(winnr) then
-            return
-          end
-
-          vim.wo[winnr].winbar = ""
-          vim.wo[winnr].relativenumber = false
-          vim.wo[winnr].scrolloff = 0
-          vim.wo[winnr].conceallevel = 0
-          vim.wo[winnr].concealcursor = ""
-
-          if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
-            -- show line numbers in buf only if > 10 lines
-            vim.wo[winnr].number = vim.api.nvim_buf_line_count(bufnr) > 10
-            local hover_lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-            local first_nonblank = 1
-            while first_nonblank <= #hover_lines and hover_lines[first_nonblank]:match("^%s*$") do
-              first_nonblank = first_nonblank + 1
-            end
-            if first_nonblank > 1 and first_nonblank <= #hover_lines then
-              vim.api.nvim_win_set_cursor(winnr, { first_nonblank, 0 })
-            end
-          else
-            vim.wo[winnr].number = false
-          end
-        end)
-      end
-
-      return bufnr, winnr
-    end
-
   '';
 
-  filetype.extension = {
-    opam = "opam";
-    jq = "jq";
-    ixx = "cpp";
-    cppm = "cpp";
-    cxxm = "cpp";
-    "c++m" = "cpp";
-    mxx = "cpp";
+  filetype = {
+    extension = {
+      opam = "opam";
+      jq = "jq";
+      ixx = "cpp";
+      cppm = "cpp";
+      cxxm = "cpp";
+      "c++m" = "cpp";
+      mxx = "cpp";
+    };
+    pattern = {
+      ".*/%.ssh/config%.local" = "sshconfig";
+    };
   };
 }

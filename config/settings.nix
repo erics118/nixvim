@@ -11,7 +11,7 @@
     relativenumber = true;
 
     # use system clipboard
-    clipboard = "unnamedplus";
+    # clipboard = "unnamedplus";
 
     # scroll offsets
     scrolloff = 5;
@@ -25,6 +25,12 @@
 
     # completion height
     pumheight = 15;
+
+    # idle delay for CursorHold and swap writes
+    updatetime = 250;
+
+    # default border for floating windows (hover, signature help, etc.)
+    winborder = "rounded";
 
     # hide command line unless needed
     cmdheight = 0;

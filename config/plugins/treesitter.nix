@@ -40,10 +40,12 @@
     enable = true;
   };
 
-  # Folding settings (using treesitter for folding)
+  # Folding via treesitter. Files open fully unfolded; use zc/zo/za to manage.
   opts = {
     foldmethod = "expr";
     foldexpr = "v:lua.vim.treesitter.foldexpr()";
-    foldenable = false;
+    foldenable = true;
+    foldlevel = 99;
+    foldlevelstart = 99;
   };
 }

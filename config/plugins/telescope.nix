@@ -5,6 +5,7 @@
 }:
 let
   name = "telescope";
+  inherit (utils) mkMap;
 in
 {
   assertions = [
@@ -65,77 +66,21 @@ in
   };
 
   keymaps = [
-    {
-      mode = "n";
-      key = "<leader>f";
-      action = "";
-      options = {
-        desc = "+Telescope";
-      };
-    }
-    {
-      mode = "n";
-      key = "<leader>fb";
-      action = "<cmd>Telescope file_browser grouped=true<cr>";
-      options = {
-        desc = "File browser";
-      };
-    }
-    {
-      mode = "n";
-      key = "<leader>fd";
-      action = "<cmd>Telescope find_files<cr>";
-      options = {
-        desc = "Find file";
-      };
-    }
-    {
-      mode = "n";
-      key = "<leader>fg";
-      action = "<cmd>Telescope live_grep<cr>";
-      options = {
-        desc = "Live grep";
-      };
-    }
-    {
-      mode = "n";
-      key = "<leader>fh";
-      action = "<cmd>Telescope help_tags<cr>";
-      options = {
-        desc = "Help tags";
-      };
-    }
-    {
-      mode = "n";
-      key = "<leader>fn";
-      action = "<cmd>Telescope notify<cr>";
-      options = {
-        desc = "Show notifications";
-      };
-    }
-    {
-      mode = "n";
-      key = "<leader>fs";
-      action = {
-        __raw = ''
-          function()
-            require("telescope.builtin").find_files({
-              cwd = vim.fn.resolve(vim.fn.stdpath("config")),
-            })
-          end
-        '';
-      };
-      options = {
-        desc = "Find in config";
-      };
-    }
-    {
-      mode = "n";
-      key = "<leader>ft";
-      action = "<cmd>TodoTelescope<cr>";
-      options = {
-        desc = "Search TODOs";
-      };
-    }
+    (mkMap "n" "<leader>fb" "<cmd>Telescope file_browser grouped=true<cr>" "File browser")
+    (mkMap "n" "<leader>fd" "<cmd>Telescope find_files<cr>" "Find file")
+    (mkMap "n" "<leader>fg" "<cmd>Telescope live_grep<cr>" "Live grep")
+    (mkMap "n" "<leader>fh" "<cmd>Telescope help_tags<cr>" "Help tags")
+    (mkMap "n" "<leader>fn" "<cmd>Telescope notify<cr>" "Show notifications")
+    (mkMap "n" "<leader>fr" "<cmd>Telescope oldfiles<cr>" "Recent files")
+    (mkMap "n" "<leader>ft" "<cmd>TodoTelescope<cr>" "Search TODOs")
+    (mkMap "n" "<leader>fs" {
+      __raw = ''
+        function()
+          require("telescope.builtin").find_files({
+            cwd = vim.fn.resolve(vim.fn.stdpath("config")),
+          })
+        end
+      '';
+    } "Find in config")
   ];
 }

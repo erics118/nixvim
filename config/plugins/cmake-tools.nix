@@ -1,3 +1,7 @@
+{ utils, ... }:
+let
+  inherit (utils) mkMap;
+in
 {
   plugins.cmake-tools = {
     enable = true;
@@ -18,35 +22,8 @@
   };
 
   keymaps = [
-    {
-      mode = "n";
-      key = "<leader>cg";
-      action = "<cmd>CMakeGenerate<CR>";
-      options = {
-        noremap = true;
-        silent = true;
-        desc = "CMake generate";
-      };
-    }
-    {
-      mode = "n";
-      key = "<leader>cb";
-      action = "<cmd>CMakeBuild<CR>";
-      options = {
-        noremap = true;
-        silent = true;
-        desc = "CMake build";
-      };
-    }
-    {
-      mode = "n";
-      key = "<leader>cr";
-      action = "<cmd>CMakeRun<CR>";
-      options = {
-        noremap = true;
-        silent = true;
-        desc = "CMake run";
-      };
-    }
+    (mkMap "n" "<leader>cg" "<cmd>CMakeGenerate<CR>" "CMake generate")
+    (mkMap "n" "<leader>cb" "<cmd>CMakeBuild<CR>" "CMake build")
+    (mkMap "n" "<leader>cr" "<cmd>CMakeRun<CR>" "CMake run")
   ];
 }

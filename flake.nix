@@ -28,7 +28,7 @@
       ];
 
       perSystem =
-        { system, ... }:
+        { pkgs, system, ... }:
         let
           nixvimLib = nixvim.lib.${system};
           nixvim' = nixvim.legacyPackages.${system};
@@ -38,6 +38,7 @@
             # You can use `extraSpecialArgs` to pass additional arguments to your module files
             extraSpecialArgs = {
               # inherit (inputs) foo;
+              isDarwin = inputs.nixpkgs.lib.strings.hasInfix "darwin" system;
               utils = {
                 requireDependencies = config: pluginName: deps: {
                   assertion =
@@ -48,6 +49,16 @@
                     Required plugins: ${inputs.nixpkgs.lib.concatStringsSep ", " deps}
                     Ensure all of these are set to '.enable = true;'
                   '';
+                };
+
+                # keymap helper for plugin modules
+                mkMap = mode: key: action: desc: {
+                  inherit mode key action;
+                  options = {
+                    noremap = true;
+                    silent = true;
+                    inherit desc;
+                  };
                 };
               };
             };
@@ -63,6 +74,10 @@
           packages = {
             # Lets you run `nix run .` to start nixvim
             default = nvim;
+          };
+
+          devShells.default = pkgs.mkShell {
+            packages = [ nvim ];
           };
 
           treefmt = {
