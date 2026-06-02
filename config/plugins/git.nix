@@ -3,6 +3,9 @@
   utils,
   ...
 }:
+let
+  inherit (utils) mkMap;
+in
 {
   assertions = [
     (utils.requireDependencies config "neogit" [
@@ -11,6 +14,26 @@
     (utils.requireDependencies config "gitsigns" [
       "which-key"
     ])
+  ];
+
+  # Gitsigns keymaps that work via :Gitsigns commands — fine globally;
+  # outside a git buffer they no-op with a small error. The [c, ]c, and
+  # ih textobject mappings stay in on_attach because they need lua
+  # callbacks and buffer scoping.
+  keymaps = [
+    (mkMap [ "n" "v" ] "<leader>hs" "<cmd>Gitsigns stage_hunk<CR>" "Stage hunk")
+    (mkMap [ "n" "v" ] "<leader>hr" "<cmd>Gitsigns reset_hunk<CR>" "Reset hunk")
+    (mkMap "n" "<leader>hS" "<cmd>Gitsigns stage_buffer<CR>" "Stage buffer")
+    (mkMap "n" "<leader>hu" "<cmd>Gitsigns undo_stage_hunk<CR>" "Undo stage hunk")
+    (mkMap "n" "<leader>hR" "<cmd>Gitsigns reset_buffer<CR>" "Reset buffer")
+    (mkMap "n" "<leader>hp" "<cmd>Gitsigns preview_hunk<CR>" "Preview hunk")
+    (mkMap "n" "<leader>hb" {
+      __raw = "function() require('gitsigns').blame_line({ full = true }) end";
+    } "Blame line")
+    (mkMap "n" "<leader>hd" "<cmd>Gitsigns diffthis<CR>" "Diff current buffer")
+    (mkMap "n" "<leader>hD" "<cmd>Gitsigns diffthis ~<CR>" "Diff against last commit")
+    (mkMap "n" "<leader>tb" "<cmd>Gitsigns toggle_current_line_blame<CR>" "Toggle blame lines")
+    (mkMap "n" "<leader>td" "<cmd>Gitsigns toggle_deleted<CR>" "Toggle deleted lines")
   ];
 
   # Fugitive - git commands
@@ -71,49 +94,27 @@
             local wk = require("which-key")
 
             wk.add({
-              { "<leader>h",  group = "Gitsigns" },
-              { "<leader>hs", "<cmd>Gitsigns stage_hunk<CR>",  desc = "Stage Hunk",      mode = { "n", "v" } },
-              { "<leader>hr", "<cmd>Gitsigns reset_hunk<CR>",  desc = "Reset Hunk",      mode = { "n", "v" } },
-              { "<leader>hS", gs.stage_buffer,                 desc = "Stage Buffer",    mode = "n" },
-              { "<leader>hu", gs.undo_stage_hunk,              desc = "Undo Stage Hunk", mode = "n" },
-              { "<leader>hR", gs.reset_buffer,                 desc = "Reset Buffer",    mode = "n" },
-              { "<leader>hp", gs.preview_hunk,                 desc = "Preview Hunk",    mode = "n" },
-              { "<leader>hb", function() gs.blame_line({ full = true }) end, desc = "Blame line", mode = "n" },
-              { "<leader>hd", gs.diffthis,                     desc = "Diff current buffer", mode = "n" },
-              { "<leader>hD", function() gs.diffthis("~") end, desc = "Diff against last commit", mode = "n" },
-              
-              { "<leader>t",  group = "Toggle settings" },
-              { "<leader>tb", gs.toggle_current_line_blame,    desc = "Toggle blame lines",   mode = "n" },
-              { "<leader>td", gs.toggle_deleted,               desc = "Toggle deleted lines", mode = "n" },
-              
+              -- expr mappings: fall back to vim's diff motion when in a diff,
+              -- otherwise jump between hunks
               { "[c", function()
-                  if vim.wo.diff then
-                    return "[c"
-                  end
-                  vim.schedule(function()
-                    gs.prev_hunk()
-                  end)
+                  if vim.wo.diff then return "[c" end
+                  vim.schedule(function() gs.prev_hunk() end)
                   return "<Ignore>"
                 end,
-                desc = "Go to previous hunk",
-                expr = true,
-                mode = "n"
+                desc = "Go to previous hunk", expr = true, mode = "n", buffer = bufnr,
               },
               { "]c", function()
-                  if vim.wo.diff then
-                    return "]c"
-                  end
-                  vim.schedule(function()
-                    gs.next_hunk()
-                  end)
+                  if vim.wo.diff then return "]c" end
+                  vim.schedule(function() gs.next_hunk() end)
                   return "<Ignore>"
                 end,
-                desc = "Go to next hunk",
-                expr = true,
-                mode = "n"
+                desc = "Go to next hunk", expr = true, mode = "n", buffer = bufnr,
               },
-              
-              { "ih", ":<C-U>Gitsigns select_hunk<CR>", desc = "Select inside Hunk", mode = { "o", "x" } },
+
+              -- textobject: select inside hunk
+              { "ih", ":<C-U>Gitsigns select_hunk<CR>",
+                desc = "Select inside Hunk", mode = { "o", "x" }, buffer = bufnr,
+              },
             })
           end
         '';

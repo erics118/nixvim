@@ -5,20 +5,44 @@ in
   # define autocmd group
   autoGroups = {
     numbertoggle.clear = true;
+    UserLspFloatStyle.clear = true;
   };
 
   autoCmd = [
     {
-      desc = "Treat SSH config.local as sshconfig";
-      event = [
-        "BufNewFile"
-        "BufRead"
-      ];
-      pattern = "*/.ssh/config.local";
-      command = "setfiletype sshconfig";
+      desc = "Style LSP floating windows (hover, signature help)";
+      event = "FileType";
+      pattern = "markdown";
+      group = "UserLspFloatStyle";
+      callback = {
+        __raw = ''
+          function(ev)
+            local win = vim.api.nvim_get_current_win()
+            if vim.api.nvim_win_get_config(win).relative == "" then
+              return
+            end
+            vim.wo[win].winbar = ""
+            vim.wo[win].relativenumber = false
+            vim.wo[win].scrolloff = 0
+            vim.wo[win].conceallevel = 0
+            vim.wo[win].concealcursor = ""
+            vim.wo[win].number = vim.api.nvim_buf_line_count(ev.buf) > 10
+
+            -- skip past leading blank lines so hover doesn't open on whitespace
+            local lines = vim.api.nvim_buf_get_lines(ev.buf, 0, -1, false)
+            local first = 1
+            while first <= #lines and lines[first]:match("^%s*$") do
+              first = first + 1
+            end
+            if first > 1 and first <= #lines then
+              vim.api.nvim_win_set_cursor(win, { first, 0 })
+            end
+          end
+        '';
+      };
     }
     {
-      desc = "Enable spell checking for prose, tex, gitcommit";
+      desc = "Enable spell checking and word wrap for prose, tex, gitcommit";
       event = "FileType";
       pattern = [
         "text"
@@ -28,50 +52,7 @@ in
         "markdown.mdx"
         "gitcommit"
       ];
-      command = "setlocal spell spelllang=en_us";
-    }
-    {
-      desc = "Enable word wrap for prose and LaTeX";
-      event = "FileType";
-      pattern = [
-        "text"
-        "tex"
-        "markdown"
-        "mdx"
-        "markdown.mdx"
-      ];
-      command = "setlocal wrap linebreak breakindent";
-    }
-    {
-      desc = "Open nvim-tree on startup";
-      event = "VimEnter";
-      once = true;
-      callback = {
-        __raw = ''
-          function(data)
-            if vim.o.diff then
-              return
-            end
-
-            if vim.fn.argc(-1) == 0 then
-              vim.cmd("NvimTreeOpen")
-              return
-            end
-
-            if vim.fn.isdirectory(data.file) == 1 then
-              vim.cmd("NvimTreeOpen")
-              return
-            end
-
-            if vim.bo[data.buf].buftype ~= "" then
-              return
-            end
-
-            vim.cmd("NvimTreeOpen")
-            vim.cmd("wincmd p")
-          end
-        '';
-      };
+      command = "setlocal spell spelllang=en_us wrap linebreak breakindent";
     }
     {
       desc = "Set 4 space indentation";
@@ -116,32 +97,9 @@ in
       };
     }
 
-    {
-      desc = "Disable line numbers in floating windows";
-      event = "WinEnter";
-      callback = {
-        __raw = ''
-          function()
-            if vim.api.nvim_win_get_config(0).relative ~= "" then
-              local show_number = vim.bo.buftype == "nofile"
-                and vim.bo.filetype == "markdown"
-                and vim.api.nvim_buf_line_count(0) > 10
-              vim.wo.number = show_number
-              vim.wo.relativenumber = false
-              vim.wo.scrolloff = 0
-              if vim.bo.buftype == "nofile" and vim.bo.filetype == "markdown" then
-                vim.wo.conceallevel = 0
-                vim.wo.concealcursor = ""
-              end
-            end
-          end
-        '';
-      };
-    }
-
     # smarter relative numbers
     {
-      desc = "Smarter relative numbers";
+      desc = "Disable rnu when leaving active window";
       event = [
         "InsertEnter"
         "BufLeave"
@@ -154,7 +112,7 @@ in
       };
     }
     {
-      desc = "Smarter relative numbers";
+      desc = "Enable rnu when entering active window";
       event = [
         "InsertLeave"
         "BufEnter"
@@ -167,7 +125,7 @@ in
       };
     }
     {
-      desc = "Smarter relative numbers";
+      desc = "Toggle rnu around cmdline";
       event = [
         "CmdlineEnter"
         "CmdlineLeave"
@@ -189,7 +147,7 @@ in
   # helper logic for numbertoggle
   extraConfigLua = ''
     local ignore_ft = {
-      ${builtins.concatStringsSep ",\n      " (builtins.map builtins.toJSON ignoredUiFiletypes)}
+      ${builtins.concatStringsSep ",\n      " (map builtins.toJSON ignoredUiFiletypes)}
     }
 
     ft_guard = function(callback)

@@ -2,30 +2,29 @@
   colorschemes.catppuccin = {
     enable = true;
     settings = {
-      transparent_background = false;
+      # pin flavour explicitly; no runtime theme switching
+      flavour = "mocha";
+      transparent_background = true;
       styles = {
         comments = [ "italic" ];
-        conditionals = [ "italic" ];
       };
       term_colors = true;
-      integrations = {
-        treesitter = true;
-        treesitter_context = true;
-        native_lsp = {
-          enabled = true;
-          virtual_text = {
-            errors = [ "italic" ];
-            hints = [ "italic" ];
-            warnings = [ "italic" ];
-            information = [ "italic" ];
-          };
-          underlines = {
-            errors = [ "undercurl" ];
-            hints = [ "undercurl" ];
-            warnings = [ "undercurl" ];
-            information = [ "undercurl" ];
-          };
+      lsp_styles = {
+        virtual_text = {
+          errors = [ "italic" ];
+          hints = [ "italic" ];
+          warnings = [ "italic" ];
+          information = [ "italic" ];
         };
+        underlines = {
+          errors = [ "undercurl" ];
+          hints = [ "undercurl" ];
+          warnings = [ "undercurl" ];
+          information = [ "undercurl" ];
+        };
+      };
+      integrations = {
+        treesitter_context = true;
         cmp = true;
         lsp_trouble = true;
         nvimtree = true;
@@ -34,10 +33,8 @@
           enabled = true;
           colored_indent_levels = true;
         };
-        bufferline = true;
-        lualine = true;
+        lualine = { };
         gitsigns = true;
-        markdown = true;
         neogit = true;
         notify = true;
       };
@@ -49,7 +46,6 @@
                 -- floats
                 NormalFloat = { bg = colors.surface0 },
                 FloatBorder = { fg = colors.overlay0, bg = colors.surface0 },
-                LspInfoBorder = { link = "FloatBorder" },
                 NvimTreeWinSeparator = { link = "FloatBorder" },
                 WhichKeyBorder = { link = "FloatBorder" },
                 -- telescope
@@ -68,7 +64,7 @@
                 FidgetTask = { fg = colors.subtext0 },
 
                 NotifyBackground = { bg = colors.base },
-                NotifyINFOBorder = { link = "NotifyInfoTitle" },
+                NotifyINFOBorder = { link = "NotifyINFOTitle" },
                 NotifyINFOIcon = { link = "NotifyINFOTitle" },
                 NotifyINFOTitle = { fg = colors.pink },
               }
@@ -78,5 +74,5 @@
       };
     };
   };
-  colorscheme = "catppuccin";
+  colorscheme = "catppuccin-mocha";
 }

@@ -16,6 +16,7 @@
     settings = {
       compiler_method = "latexmk";
       quickfix_mode = 0;
+      view_method = "sioyek";
     };
   };
 

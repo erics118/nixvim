@@ -1,3 +1,7 @@
+{ utils, ... }:
+let
+  inherit (utils) mkMap;
+in
 {
   plugins.conform-nvim = {
     enable = true;
@@ -7,6 +11,12 @@
       format_on_save = {
         timeout_ms = 800;
         lsp_format = "fallback";
+      };
+
+      formatters = {
+        latexindent = {
+          prepend_args = [ "-l" ];
+        };
       };
 
       formatters_by_ft = {
@@ -58,28 +68,9 @@
   };
 
   keymaps = [
-    {
-      mode = [
-        "n"
-        "v"
-      ];
-      key = "<leader>lf";
-      action.__raw = "function() require('conform').format({ async = true, lsp_format = 'fallback' }) end";
-      options = {
-        noremap = true;
-        silent = true;
-        desc = "Format buffer or range";
-      };
-    }
-    {
-      mode = "n";
-      key = "<leader>li";
-      action = "<cmd>ConformInfo<CR>";
-      options = {
-        noremap = true;
-        silent = true;
-        desc = "Conform formatter info";
-      };
-    }
+    (mkMap [ "n" "v" ] "<leader>lf" {
+      __raw = "function() require('conform').format({ async = true, lsp_format = 'fallback' }) end";
+    } "Format buffer or range")
+    (mkMap "n" "<leader>li" "<cmd>ConformInfo<CR>" "Conform formatter info")
   ];
 }
