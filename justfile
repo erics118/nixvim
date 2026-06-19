@@ -1,21 +1,31 @@
 set shell := ["zsh", "-uc"]
 
 # list all commands
+[private]
 default:
-	@just --list
+    @just --list --unsorted
 
 # update all flake inputs
-update:
-	nix flake update
+[group('flake')]
+update-all:
+    nix flake update
+
+# update a single flake input
+[group('flake')]
+update input:
+    nix flake update {{ input }}
 
 # format the repo
+[group('flake')]
 fmt:
-	nix fmt
+    nix fmt
 
-# check flake
+# check flake outputs
+[group('flake')]
 check:
-    nix flake check .
+    nix flake check
 
 # run nixvim
+[group('nixvim')]
 run *args:
-    nix run . -- {{args}}
+    nix run . -- {{ args }}

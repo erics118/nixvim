@@ -8,9 +8,7 @@
 
     texlivePackage = null;
 
-    lazyLoad.settings.ft = [
-      "tex"
-    ];
+    lazyLoad.settings.ft = [ "tex" ];
     mupdfPackage = null;
     pstreePackage = null;
     settings = {
@@ -22,8 +20,6 @@
 
   plugins.cmp-vimtex = {
     enable = true;
-    lazyLoad.settings.ft = [
-      "tex"
-    ];
+    lazyLoad.settings.ft = [ "tex" ];
   };
 }

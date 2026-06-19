@@ -10,7 +10,6 @@
     # nvim-lint linters
     statix
     deadnix
-    shellcheck
     hadolint
     markdownlint-cli2
   ];

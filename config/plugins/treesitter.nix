@@ -7,12 +7,8 @@
 
 {
   assertions = [
-    (utils.requireDependencies config "treesitter-context" [
-      "treesitter"
-    ])
-    (utils.requireDependencies config "ts-autotag" [
-      "treesitter"
-    ])
+    (utils.requireDependencies config "treesitter-context" [ "treesitter" ])
+    (utils.requireDependencies config "ts-autotag" [ "treesitter" ])
   ];
 
   plugins.treesitter = {

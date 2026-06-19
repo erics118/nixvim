@@ -23,12 +23,15 @@
         "aarch64-darwin"
       ];
 
-      imports = [
-        inputs.treefmt-nix.flakeModule
-      ];
+      imports = [ inputs.treefmt-nix.flakeModule ];
 
       perSystem =
-        { pkgs, system, ... }:
+        {
+          config,
+          pkgs,
+          system,
+          ...
+        }:
         let
           nixvimLib = nixvim.lib.${system};
           nixvim' = nixvim.legacyPackages.${system};
@@ -77,14 +80,32 @@
           };
 
           devShells.default = pkgs.mkShell {
-            packages = [ nvim ];
+            packages = [
+              nvim
+              config.treefmt.build.wrapper
+            ];
           };
 
           treefmt = {
             projectRootFile = "flake.nix";
+
+            settings = {
+              excludes = [
+                "result"
+                "result-*"
+                "flake.lock"
+              ];
+              on-unmatched = "info";
+            };
+
             programs = {
               nixfmt.enable = true;
-              stylua.enable = true;
+              nixfmt.strict = true;
+              deadnix.enable = true;
+              statix.enable = true;
+
+              prettier.enable = true;
+              just.enable = true;
             };
           };
         };

@@ -3,6 +3,8 @@
   editorconfig.enable = true;
 
   opts = {
+    exrc = true;
+
     # enable mouse support
     mouse = "a";
 

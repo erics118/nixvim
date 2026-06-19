@@ -1,17 +1,9 @@
-{
-  config,
-  utils,
-  ...
-}:
+{ config, utils, ... }:
 let
   name = "nvim-tree";
 in
 {
-  assertions = [
-    (utils.requireDependencies config name [
-      "web-devicons"
-    ])
-  ];
+  assertions = [ (utils.requireDependencies config name [ "web-devicons" ]) ];
 
   plugins.${name} = {
     enable = true;
@@ -20,6 +12,10 @@ in
         indent_markers = {
           enable = true;
         };
+        highlight_git = "name";
+      };
+      update_focused_file = {
+        enable = true;
       };
       diagnostics = {
         enable = true;
@@ -30,6 +26,9 @@ in
             border = "rounded";
           };
         };
+      };
+      filters = {
+        custom = [ "^.git$" ];
       };
     };
   };

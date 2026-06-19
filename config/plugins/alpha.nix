@@ -10,7 +10,7 @@ let
     type = "button";
     val = text;
     opts = {
-      shortcut = shortcut;
+      inherit shortcut;
       width = 50; # width of longest button text
       align_shortcut = "right";
       hl_shortcut = "Keyword";

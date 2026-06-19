@@ -1,15 +1,9 @@
-{
-  config,
-  utils,
-  ...
-}:
+{ config, utils, ... }:
 let
   name = "lualine";
 in
 {
-  assertions = [
-    (utils.requireDependencies config name [ "web-devicons" ])
-  ];
+  assertions = [ (utils.requireDependencies config name [ "web-devicons" ]) ];
 
   # Enable the lualine plugin
   plugins.lualine = {

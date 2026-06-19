@@ -1,8 +1,4 @@
-{
-  config,
-  utils,
-  ...
-}:
+{ config, utils, ... }:
 let
   name = "nvim-autopairs";
 in

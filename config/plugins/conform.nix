@@ -28,7 +28,8 @@ in
         nix = [ "nixfmt" ];
         sh = [ "shfmt" ];
         bash = [ "shfmt" ];
-        zsh = [ "shfmt" ];
+        # shfmt does not understand zsh syntax well enough for safe format-on-save
+        zsh = [ ];
 
         javascript = [ "prettier" ];
         javascriptreact = [ "prettier" ];
