@@ -61,6 +61,7 @@ in
         ocaml = [ "ocamlformat" ];
         c = [ "clang_format" ];
         cpp = [ "clang_format" ];
+        cuda = [ "clang_format" ];
         zig = [ "zigfmt" ];
         haskell = [ "fourmolu" ];
         elixir = [ "mix" ];
