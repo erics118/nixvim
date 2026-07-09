@@ -210,6 +210,9 @@ in
         "--background-index"
         "--clang-tidy"
         "--enable-config"
+        # probe the compile_commands driver so libc++/pkg headers resolve
+        # nix cc-wrapper + common system compilers (gcc/clang, homebrew)
+        "--query-driver=/nix/store/*/bin/clang++,/nix/store/*/bin/clang,/usr/bin/clang++,/usr/bin/clang,/usr/bin/g++,/usr/bin/gcc,/usr/bin/c++,/usr/bin/cc,/opt/homebrew/bin/*"
         "--all-scopes-completion"
         "--completion-style=detailed"
         "-j=8"
