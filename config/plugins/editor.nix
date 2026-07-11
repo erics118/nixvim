@@ -12,7 +12,13 @@ in
       enable = true;
       lazyLoad.settings.event = "BufReadPost";
     };
-    nvim-surround.enable = true;
+    nvim-surround = {
+      enable = true;
+      lazyLoad.settings.event = [
+        "BufReadPost"
+        "BufNewFile"
+      ];
+    };
     headlines = {
       enable = true;
       lazyLoad.settings.ft = [

@@ -4,6 +4,10 @@ in
 {
   plugins.indent-blankline = {
     enable = true;
+    lazyLoad.settings.event = [
+      "BufReadPost"
+      "BufNewFile"
+    ];
     luaConfig.post = ''
       local function update_scope_underline_style()
         local scope_hl = vim.api.nvim_get_hl(0, { name = "IblScope", link = false })
