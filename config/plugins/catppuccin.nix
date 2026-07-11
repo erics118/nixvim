@@ -43,6 +43,8 @@
           __raw = ''
             function(colors)
               return {
+                -- shared selection background (pmenu, telescope)
+                Selection = { bg = colors.surface1 },
                 -- floats
                 NormalFloat = { bg = colors.surface0 },
                 FloatBorder = { fg = colors.overlay0, bg = colors.surface0 },
