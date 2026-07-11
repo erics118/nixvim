@@ -55,6 +55,32 @@ in
       command = "setlocal spell spelllang=en_us wrap linebreak breakindent";
     }
     {
+      desc = "Open nvim-tree on startup";
+      event = "VimEnter";
+      once = true;
+      callback = {
+        __raw = ''
+          function(data)
+            if vim.o.diff then
+              return
+            end
+
+            -- skip when launched directly into a special buffer
+            if
+              data.file ~= ""
+              and vim.fn.isdirectory(data.file) ~= 1
+              and vim.bo[data.buf].buftype ~= ""
+            then
+              return
+            end
+
+            vim.cmd("NvimTreeOpen")
+            vim.cmd("wincmd p")
+          end
+        '';
+      };
+    }
+    {
       desc = "Set 4 space indentation";
       event = "FileType";
       pattern = [
@@ -65,6 +91,28 @@ in
         "rust"
       ];
       command = "setlocal shiftwidth=4 tabstop=4 softtabstop=4";
+    }
+    {
+      desc = "Prevent nvim-tree window from scrolling horizontally";
+      event = "FileType";
+      pattern = "NvimTree";
+      command = "setlocal sidescrolloff=0";
+    }
+    {
+      desc = "Remember nvim-tree width when manually resized";
+      event = "WinResized";
+      pattern = "*";
+      callback = {
+        __raw = ''
+          function()
+            local win = vim.api.nvim_get_current_win()
+            local buf = vim.api.nvim_win_get_buf(win)
+            if vim.bo[buf].filetype == "NvimTree" then
+              vim.g.nvim_tree_width = vim.api.nvim_win_get_width(win)
+            end
+          end
+        '';
+      };
     }
     {
       desc = "Automatically resize windows when the host window size changes.";

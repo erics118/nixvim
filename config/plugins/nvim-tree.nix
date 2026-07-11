@@ -8,11 +8,16 @@ in
   plugins.${name} = {
     enable = true;
     settings = {
+      hijack_cursor = true;
       renderer = {
         indent_markers = {
           enable = true;
         };
         highlight_git = "name";
+      };
+      view = {
+        preserve_window_proportions = true;
+        width.__raw = "function() return vim.g.nvim_tree_width or 30 end";
       };
       update_focused_file = {
         enable = true;
