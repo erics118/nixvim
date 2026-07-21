@@ -15,9 +15,12 @@
     # use system clipboard
     # clipboard = "unnamedplus";
 
+    # reload files changed outside neovim
+    autoread = true;
+
     # scroll offsets
-    scrolloff = 5;
-    sidescrolloff = 15;
+    scrolloff = 3;
+    sidescrolloff = 10;
 
     # always show status
     laststatus = 3;
@@ -94,6 +97,7 @@
     }
 
     vim.opt.fillchars:append({
+      eob = " ",
       horiz = vim.g.bc.horiz,
       horizup = vim.g.bc.horizup,
       horizdown = vim.g.bc.horizdown,

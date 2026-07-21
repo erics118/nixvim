@@ -6,9 +6,21 @@ in
   autoGroups = {
     numbertoggle.clear = true;
     UserLspFloatStyle.clear = true;
+    checktime.clear = true;
   };
 
   autoCmd = [
+    {
+      desc = "Reload file if changed on disk";
+      event = [
+        "FocusGained"
+        "BufEnter"
+        "CursorHold"
+        "CursorHoldI"
+      ];
+      group = "checktime";
+      command = "if mode() != 'c' | checktime | endif";
+    }
     {
       desc = "Style LSP floating windows (hover, signature help)";
       event = "FileType";
@@ -105,6 +117,15 @@ in
       callback = {
         __raw = ''
           function()
+            -- only remember width while the tree is a sidebar next to other
+            -- windows; skip when it is the sole window (would save full width)
+            local wins = vim.tbl_filter(function(w)
+              return vim.api.nvim_win_get_config(w).relative == ""
+            end, vim.api.nvim_tabpage_list_wins(0))
+            if #wins <= 1 then
+              return
+            end
+
             local win = vim.api.nvim_get_current_win()
             local buf = vim.api.nvim_win_get_buf(win)
             if vim.bo[buf].filetype == "NvimTree" then
