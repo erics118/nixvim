@@ -9,11 +9,14 @@ in
     enable = true;
     settings = {
       hijack_cursor = true;
+      select_prompts = true;
       renderer = {
+        group_empty = true;
         indent_markers = {
           enable = true;
         };
         highlight_git = "name";
+        highlight_modified = "name";
       };
       view = {
         preserve_window_proportions = true;
@@ -22,8 +25,12 @@ in
       update_focused_file = {
         enable = true;
       };
+      modified = {
+        enable = true;
+      };
       diagnostics = {
         enable = true;
+        show_on_dirs = true;
       };
       actions = {
         file_popup = {
