@@ -350,7 +350,7 @@ in
     (lspMap "[d" "vim.diagnostic.goto_prev()" "Previous diagnostic")
     (lspMap "<leader>e" "vim.diagnostic.open_float()" "Open diagnostic float")
     (lspMap "<leader>ti"
-      "local bufnr = 0; local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }); vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr }); vim.notify('Inlay hints: ' .. (enabled and 'OFF' or 'ON'), vim.log.levels.INFO)"
+      "vim.g.inlay_hints_enabled = not vim.g.inlay_hints_enabled; vim.lsp.inlay_hint.enable(vim.g.inlay_hints_enabled); vim.notify('Inlay hints: ' .. (vim.g.inlay_hints_enabled and 'ON' or 'OFF'), vim.log.levels.INFO)"
       "Toggle inlay hints"
     )
     (lspMap "<leader>wa" "vim.lsp.buf.add_workspace_folder()" "Add workspace folder")
@@ -373,6 +373,8 @@ in
 
   # Attach inlay hints and codelens on LSP attach
   extraConfigLua = ''
+    vim.g.inlay_hints_enabled = true
+
     local function is_file_backed_buffer(bufnr)
       local name = vim.api.nvim_buf_get_name(bufnr)
       if name == "" or vim.bo[bufnr].buftype ~= "" then
@@ -391,7 +393,7 @@ in
           and client.server_capabilities.inlayHintProvider
           and is_file_backed_buffer(ev.buf)
         then
-          vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
+          vim.lsp.inlay_hint.enable(vim.g.inlay_hints_enabled, { bufnr = ev.buf })
         end
       end,
     })
