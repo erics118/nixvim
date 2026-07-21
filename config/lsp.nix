@@ -127,14 +127,6 @@ in
           completion = true;
           validate = true;
           suggest.parentSkeletonSelectedFirst = true;
-          schemas = {
-            "https://json.schemastore.org/github-action" = ".github/action.{yaml,yml}";
-            "https://json.schemastore.org/github-workflow" = ".github/workflows/*";
-            "https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json" =
-              "*lab-ci.{yaml,yml}";
-            "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json" =
-              "docker-compose.{yml,yaml}";
-          };
         };
         redhat.telemetry.enabled = false;
       };
