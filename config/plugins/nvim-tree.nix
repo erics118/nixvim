@@ -40,7 +40,13 @@ in
         };
       };
       filters = {
-        custom = [ "^.git$" ];
+        custom = [
+          "^.git$"
+          "^.cache$"
+          "^.devenv$"
+          "^.direnv$"
+        ];
+        exclude = [ "%.env.*" ];
       };
     };
   };
