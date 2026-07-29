@@ -17,6 +17,15 @@ in
         latexindent = {
           prepend_args = [ "-l" ];
         };
+        # treefmt-nix runs shfmt with these, so format-on-save agrees with it
+        # instead of reindenting every shell script to tabs
+        shfmt = {
+          prepend_args = [
+            "-i"
+            "2"
+            "-s"
+          ];
+        };
       };
 
       formatters_by_ft = {
