@@ -7,6 +7,7 @@ in
     numbertoggle.clear = true;
     UserLspFloatStyle.clear = true;
     checktime.clear = true;
+    LspFixOnSave.clear = true;
   };
 
   autoCmd = [
@@ -49,6 +50,30 @@ in
             if first > 1 and first <= #lines then
               vim.api.nvim_win_set_cursor(win, { first, 0 })
             end
+          end
+        '';
+      };
+    }
+    {
+      desc = "Apply LSP source fixes on save";
+      event = "LspAttach";
+      group = "LspFixOnSave";
+      callback = {
+        __raw = ''
+          function(ev)
+            local client = vim.lsp.get_client_by_id(ev.data.client_id)
+            local kinds = client and lsp_fix_kinds[client.name]
+            if not kinds then
+              return
+            end
+
+            vim.api.nvim_create_autocmd("BufWritePre", {
+              buffer = ev.buf,
+              group = "LspFixOnSave",
+              callback = function()
+                lsp_fix_on_save(client, ev.buf, kinds)
+              end,
+            })
           end
         '';
       };
@@ -213,8 +238,40 @@ in
     }
   ];
 
-  # helper logic for numbertoggle
+  # helper logic for numbertoggle and lsp fix-on-save
   extraConfigLua = ''
+    -- source action kinds to apply on save, per server
+    lsp_fix_kinds = {
+      eslint = { "source.fixAll.eslint" },
+      ts_ls = {
+        "source.addMissingImports.ts",
+        "source.organizeImports.ts",
+        "source.fixAll.ts",
+      },
+      -- conform already runs ruff_format and ruff_organize_imports
+      ruff = { "source.fixAll.ruff" },
+    }
+
+    -- applied one kind at a time so they run in the order listed above
+    lsp_fix_on_save = function(client, bufnr, kinds)
+      for _, kind in ipairs(kinds) do
+        local params = vim.lsp.util.make_range_params(0, client.offset_encoding)
+        params.context = { only = { kind }, diagnostics = {} }
+
+        local res = client:request_sync("textDocument/codeAction", params, 3000, bufnr)
+        for _, action in pairs(res and res.result or {}) do
+          -- servers may return an unresolved action carrying only `data`
+          if not action.edit and action.data then
+            local resolved = client:request_sync("codeAction/resolve", action, 3000, bufnr)
+            action = resolved and resolved.result or action
+          end
+          if action.edit then
+            vim.lsp.util.apply_workspace_edit(action.edit, client.offset_encoding)
+          end
+        end
+      end
+    end
+
     local ignore_ft = {
       ${builtins.concatStringsSep ",\n      " (map builtins.toJSON ignoredUiFiletypes)}
     }

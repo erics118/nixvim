@@ -30,8 +30,17 @@ in
   # LSP servers
   plugins.lsp.servers = {
     # Web development
-    html = projectServer;
-    cssls = projectServer;
+    # shipped in vscode-langservers-extracted
+    html = ambientServer;
+    cssls = ambientServer // {
+      # tailwind v4 at-rules (@theme, @custom-variant, @utility) are not in
+      # cssls' known-at-rule list; tailwindcss-language-server validates them
+      settings = {
+        css.lint.unknownAtRules = "ignore";
+        scss.lint.unknownAtRules = "ignore";
+        less.lint.unknownAtRules = "ignore";
+      };
+    };
     ts_ls = projectServer;
     tailwindcss = projectServer // {
       # Tailwind's upstream filetype list is very broad
@@ -78,9 +87,7 @@ in
     nextls = projectServer;
 
     # TypeScript/JavaScript linting
-    eslint = projectServer // {
-      settings.workingDirectories.mode = "auto";
-    };
+    eslint = ambientServer;
 
     # Data formats
     jsonls = ambientServer;
