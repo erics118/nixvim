@@ -370,34 +370,6 @@ in
     settings.padding = false;
   };
 
-  # Attach inlay hints and codelens on LSP attach
-  extraConfigLua = ''
-    vim.g.inlay_hints_enabled = true
-
-    local function is_file_backed_buffer(bufnr)
-      local name = vim.api.nvim_buf_get_name(bufnr)
-      if name == "" or vim.bo[bufnr].buftype ~= "" then
-        return false
-      end
-
-      local uri = vim.uri_from_bufnr(bufnr)
-      return uri ~= nil and vim.startswith(uri, "file://")
-    end
-
-    vim.api.nvim_create_autocmd("LspAttach", {
-      group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-      callback = function(ev)
-        local client = vim.lsp.get_client_by_id(ev.data.client_id)
-        if client
-          and client.server_capabilities.inlayHintProvider
-          and is_file_backed_buffer(ev.buf)
-        then
-          vim.lsp.inlay_hint.enable(vim.g.inlay_hints_enabled, { bufnr = ev.buf })
-        end
-      end,
-    })
-  '';
-
   filetype = {
     extension = {
       opam = "opam";

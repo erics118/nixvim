@@ -16,9 +16,6 @@
         tailwind = "both";
         virtualtext = " ";
       };
-    }; # #FF0000, #FF0000FF, rgb(255,0,0), rgba(255,0,0,1)
-    # #beefed
-    #feeded
-    #deadbeef
+    };
   };
 }

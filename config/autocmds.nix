@@ -1,3 +1,4 @@
+{ utils, ... }:
 let
   ignoredUiFiletypes = import ./shared/ignored-ui-filetypes.nix;
 in
@@ -8,6 +9,7 @@ in
     UserLspFloatStyle.clear = true;
     checktime.clear = true;
     LspFixOnSave.clear = true;
+    UserLspConfig.clear = true;
   };
 
   autoCmd = [
@@ -74,6 +76,24 @@ in
                 lsp_fix_on_save(client, ev.buf, kinds)
               end,
             })
+          end
+        '';
+      };
+    }
+    {
+      desc = "Enable inlay hints on LSP attach";
+      event = "LspAttach";
+      group = "UserLspConfig";
+      callback = {
+        __raw = ''
+          function(ev)
+            local client = vim.lsp.get_client_by_id(ev.data.client_id)
+            if client
+              and client.server_capabilities.inlayHintProvider
+              and is_file_backed_buffer(ev.buf)
+            then
+              vim.lsp.inlay_hint.enable(vim.g.inlay_hints_enabled, { bufnr = ev.buf })
+            end
           end
         '';
       };
@@ -240,6 +260,18 @@ in
 
   # helper logic for numbertoggle and lsp fix-on-save
   extraConfigLua = ''
+    vim.g.inlay_hints_enabled = true
+
+    is_file_backed_buffer = function(bufnr)
+      local name = vim.api.nvim_buf_get_name(bufnr)
+      if name == "" or vim.bo[bufnr].buftype ~= "" then
+        return false
+      end
+
+      local uri = vim.uri_from_bufnr(bufnr)
+      return uri ~= nil and vim.startswith(uri, "file://")
+    end
+
     -- source action kinds to apply on save, per server
     lsp_fix_kinds = {
       eslint = { "source.fixAll.eslint" },
@@ -272,9 +304,7 @@ in
       end
     end
 
-    local ignore_ft = {
-      ${builtins.concatStringsSep ",\n      " (map builtins.toJSON ignoredUiFiletypes)}
-    }
+    local ignore_ft = { ${utils.luaList ignoredUiFiletypes} }
 
     ft_guard = function(callback)
       if vim.api.nvim_win_get_config(0).relative ~= "" then

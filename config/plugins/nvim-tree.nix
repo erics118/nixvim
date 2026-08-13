@@ -32,6 +32,16 @@ in
         enable = true;
         show_on_dirs = true;
       };
+      on_attach.__raw = ''
+        function(bufnr)
+          local api = require("nvim-tree.api")
+          api.config.mappings.default_on_attach(bufnr)
+          -- let <C-k> fall through to the global window-nav mapping,
+          -- move the info popup to i
+          pcall(vim.keymap.del, "n", "<C-k>", { buffer = bufnr })
+          vim.keymap.set("n", "i", api.node.show_info_popup, { buffer = bufnr, desc = "nvim-tree: Info" })
+        end
+      '';
       actions = {
         file_popup = {
           open_win_config = {

@@ -1,6 +1,6 @@
+{ utils, ... }:
 let
-  ignoredUiFiletypes = import ../shared/ignored-ui-filetypes.nix;
-  ignoredFtLua = builtins.concatStringsSep ", " (builtins.map builtins.toJSON ignoredUiFiletypes);
+  ignoredFtLua = utils.luaList (import ../shared/ignored-ui-filetypes.nix);
 in
 {
   plugins.dropbar = {

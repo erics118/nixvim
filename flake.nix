@@ -54,6 +54,9 @@
                   '';
                 };
 
+                # render a nix list as a lua table-literal body
+                luaList = inputs.nixpkgs.lib.concatMapStringsSep ", " builtins.toJSON;
+
                 # keymap helper for plugin modules
                 mkMap = mode: key: action: desc: {
                   inherit mode key action;
