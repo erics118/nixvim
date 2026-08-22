@@ -374,6 +374,7 @@ in
     extension = {
       opam = "opam";
       jq = "jq";
+      mdx = "markdown";
       ixx = "cpp";
       cppm = "cpp";
       cxxm = "cpp";

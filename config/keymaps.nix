@@ -61,6 +61,12 @@ in
     # NvimTree
     (mkMap "n" "<C-b>" ":NvimTreeToggle<CR>" "Toggle file tree")
 
+    # Toggle word wrap
+    (mkMap "n" "<leader>tw" "<cmd>set wrap!<CR>" "Toggle word wrap")
+
+    # Toggle spell checking
+    (mkMap "n" "<leader>ts" "<cmd>set spell!<CR>" "Toggle spell")
+
     # Bufferline cycle / move
     (mkMap "n" (bufKey ",") "<Cmd>BufferLineCyclePrev<CR>" "Previous buffer")
     (mkMap "n" (bufKey ".") "<Cmd>BufferLineCycleNext<CR>" "Next buffer")

@@ -1,4 +1,6 @@
-{
+{ utils, ... }: {
+  keymaps = [ (utils.mkMap "n" "<leader>tc" "<cmd>Copilot toggle<CR>" "Toggle Copilot") ];
+
   plugins.copilot-lua = {
     enable = true;
     lazyLoad.settings.event = "InsertEnter";

@@ -18,6 +18,9 @@ in
         "BufReadPost"
         "BufNewFile"
       ];
+      settings.surrounds.C.__raw = ''
+        { add = { { "```", "" }, { "", "```" } } }
+      '';
     };
     headlines = {
       enable = true;
@@ -28,6 +31,7 @@ in
         "org"
       ];
     };
+    marks.enable = true;
   };
 
   # Keymaps for flash
@@ -41,5 +45,7 @@ in
       __raw = "function() require('flash').treesitter_search() end";
     } "Treesitter Search")
     (mkMap "c" "<C-f>" { __raw = "function() require('flash').toggle() end"; } "Toggle Flash Search")
+
+    (mkMap "n" "<leader>tm" "<cmd>MarksToggleSigns<cr>" "Toggle mark signs")
   ];
 }

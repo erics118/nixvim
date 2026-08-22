@@ -64,6 +64,7 @@ in
     (mkMap "n" "<leader>fh" "<cmd>Telescope help_tags<cr>" "Help tags")
     (mkMap "n" "<leader>fn" "<cmd>Telescope notify<cr>" "Show notifications")
     (mkMap "n" "<leader>fr" "<cmd>Telescope oldfiles<cr>" "Recent files")
+    (mkMap "n" "<leader>fm" "<cmd>Telescope marks<cr>" "List marks")
     (mkMap "n" "<leader>ft" "<cmd>TodoTelescope<cr>" "Search TODOs")
     (mkMap "n" "<leader>fs" {
       __raw = ''
