@@ -14,13 +14,13 @@
   plugins.treesitter = {
     enable = true;
     nixGrammars = true; # Use nix-managed grammars
-    settings = {
-      highlight = {
-        enable = true;
-      };
-      indent = {
-        enable = true;
-      };
+    highlight = {
+      enable = true;
+      # vimtex's syntax powers in_mathzone, imaps, ]], math text objects, conceal
+      disable = [ "latex" ];
+    };
+    indent = {
+      enable = true;
     };
     # Install all grammars packaged with nixpkgs
     grammarPackages = pkgs.vimPlugins.nvim-treesitter.allGrammars;

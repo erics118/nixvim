@@ -3,7 +3,6 @@
 
   plugins.copilot-lua = {
     enable = true;
-    lazyLoad.settings.event = "InsertEnter";
 
     settings = {
       panel = {
@@ -32,12 +31,15 @@
         auto_trigger = true;
         debounce = 75;
         keymap = {
-          accept = "<C-J>";
+          accept = "<C-h>";
         };
       };
       filetypes = {
         yaml = true;
         markdown = false;
+        text = false;
+        tex = false;
+        plaintex = false;
         help = false;
         gitcommit = false;
         gitrebase = false;

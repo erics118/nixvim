@@ -8,10 +8,7 @@ in
     (utils.requireDependencies config "gitsigns" [ "which-key" ])
   ];
 
-  # Gitsigns keymaps that work via :Gitsigns commands — fine globally;
-  # outside a git buffer they no-op with a small error. The [c, ]c, and
-  # ih textobject mappings stay in on_attach because they need lua
-  # callbacks and buffer scoping.
+  # [c/]c and the ih textobject live in on_attach for lua callbacks and buffer scoping
   keymaps = [
     (mkMap [ "n" "v" ] "<leader>hs" "<cmd>Gitsigns stage_hunk<CR>" "Stage hunk")
     (mkMap [ "n" "v" ] "<leader>hr" "<cmd>Gitsigns reset_hunk<CR>" "Reset hunk")
@@ -103,9 +100,8 @@ in
                 desc = "Go to next hunk", expr = true, mode = "n", buffer = bufnr,
               },
 
-              -- textobject: select inside hunk
               { "ih", ":<C-U>Gitsigns select_hunk<CR>",
-                desc = "Select inside Hunk", mode = { "o", "x" }, buffer = bufnr,
+                desc = "Select inside hunk", mode = { "o", "x" }, buffer = bufnr,
               },
             })
           end

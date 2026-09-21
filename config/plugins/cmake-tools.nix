@@ -5,14 +5,12 @@ in
 {
   plugins.cmake-tools = {
     enable = true;
-    lazyLoad.settings.cmd = [
-      "CMakeGenerate"
-      "CMakeBuild"
-      "CMakeRun"
-      "CMakeClose"
-      "CMakeOpen"
-      "CMakeSelectBuildType"
-      "CMakeSelectBuildTarget"
+    # load on filetype: cmd-triggered lazy-load runs setup() too late for
+    # cmake_regenerate_on_save and the clangd compile-commands wiring
+    lazyLoad.settings.ft = [
+      "cmake"
+      "c"
+      "cpp"
     ];
     settings = {
       cmake_compile_commands_from_lsp = true;

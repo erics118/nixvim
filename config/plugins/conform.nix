@@ -14,8 +14,15 @@ in
       };
 
       formatters = {
+        # read the project's localSettings.yaml so nvim and treefmt use one config
         latexindent = {
-          prepend_args = [ "-l" ];
+          prepend_args = [
+            "-g"
+            "/dev/null"
+            "-l"
+            "localSettings.yaml"
+          ];
+          cwd.__raw = "require('conform.util').root_file({ 'localSettings.yaml' })";
         };
         # treefmt-nix runs shfmt with these, so format-on-save agrees with it
         # instead of reindenting every shell script to tabs

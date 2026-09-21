@@ -6,6 +6,7 @@ in
   plugins.which-key = {
     enable = true;
     settings = {
+      preset = "modern";
       replace = {
         "<space>" = "󱁐 ";
         "<leader>" = "󱁐 ";

@@ -205,18 +205,10 @@ in
     clangd = projectServer // {
       cmd = [
         "clangd"
-        "--inlay-hints=true"
-        "--background-index"
-        "--clang-tidy"
-        "--enable-config"
         # probe the compile_commands driver so libc++/pkg headers resolve
-        # nix cc-wrapper + common system compilers (gcc/clang, homebrew)
-        "--query-driver=/nix/store/*/bin/clang++,/nix/store/*/bin/clang,/usr/bin/clang++,/usr/bin/clang,/usr/bin/g++,/usr/bin/gcc,/usr/bin/c++,/usr/bin/cc,/opt/homebrew/bin/*"
-        "--all-scopes-completion"
+        "--query-driver=/nix/store/*/bin/*clang++,/nix/store/*/bin/*clang,/nix/store/*/bin/*g++,/nix/store/*/bin/*gcc,/nix/store/*/bin/*c++,/nix/store/*/bin/*cc,/usr/bin/clang++,/usr/bin/clang,/usr/bin/g++,/usr/bin/gcc,/usr/bin/c++,/usr/bin/cc,/opt/homebrew/bin/*"
         "--completion-style=detailed"
         "-j=8"
-        "--header-insertion=iwyu"
-        "--header-insertion-decorators"
       ];
     };
 
@@ -261,8 +253,6 @@ in
       completion.completeopt = "menu,menuone,noselect";
       mapping.__raw = ''
         cmp.mapping.preset.insert({
-          ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-          ["<C-f>"] = cmp.mapping.scroll_docs(4),
           ["<C-Space>"] = cmp.mapping.complete(),
           ["<C-e>"] = cmp.mapping.abort(),
           ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
@@ -315,18 +305,61 @@ in
         ];
       };
     };
+    # tex completes from vimtex; texlab is fallback so commands aren't duplicated
+    filetype.tex.sources = [
+      {
+        name = "vimtex";
+        group_index = 1;
+      }
+      {
+        name = "luasnip";
+        group_index = 1;
+      }
+      {
+        name = "nvim_lsp";
+        group_index = 2;
+      }
+      {
+        name = "buffer";
+        group_index = 2;
+      }
+      {
+        name = "path";
+        group_index = 2;
+      }
+    ];
   };
 
   # Snippets
   plugins.luasnip = {
     enable = true;
     fromVscode = [ { } ];
+    settings = {
+      enable_autosnippets = true;
+      # re-enterable snippets so <C-k> jumps back after the last node
+      history = true;
+      # drop a snippet once the cursor leaves its region
+      region_check_events = "CursorMoved";
+      delete_check_events = "TextChanged";
+    };
   };
 
   # LSP icons in completion
   plugins.lspkind = {
     enable = true;
-    cmp.enable = true;
+    cmp = {
+      enable = true;
+      # cmp-vimtex sets no kind; show its entries with a command icon
+      after = ''
+        function(entry, vim_item, kind)
+          if entry.source.name == "vimtex" then
+            kind.kind = require("lspkind").symbolic("Function", { mode = "symbol" }) .. " Function"
+            kind.kind_hl_group = "CmpItemKindFunction"
+          end
+          return kind
+        end
+      '';
+    };
     settings = {
       mode = "symbol_text";
       maxwidth = 50;
@@ -336,6 +369,12 @@ in
 
   # LSP Keymaps
   keymaps = [
+    (mkMap [ "i" "s" ] "<C-j>" {
+      __raw = "function() local ls = require('luasnip'); if ls.expand_or_jumpable() then ls.expand_or_jump() end end";
+    } "Snippet jump forward")
+    (mkMap [ "i" "s" ] "<C-k>" {
+      __raw = "function() local ls = require('luasnip'); if ls.jumpable(-1) then ls.jump(-1) end end";
+    } "Snippet jump back")
     (lspMap "gD" "vim.lsp.buf.declaration()" "Go to declaration")
     (lspMap "gd" "vim.lsp.buf.definition()" "Go to definition")
     (lspMap "K" "vim.lsp.buf.hover({ max_width = 80, max_height = 20 })" "Hover documentation")

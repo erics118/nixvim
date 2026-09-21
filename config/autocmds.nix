@@ -146,8 +146,43 @@ in
         "java"
         "python"
         "rust"
+        "tex"
       ];
       command = "setlocal shiftwidth=4 tabstop=4 softtabstop=4";
+    }
+    {
+      desc = "Stop vimtex reindenting the line when typing } or ]";
+      event = "FileType";
+      pattern = "tex";
+      command = "setlocal indentkeys-=} indentkeys-=]";
+    }
+    {
+      desc = "Label vimtex surround/toggle mappings in which-key";
+      event = "FileType";
+      pattern = "tex";
+      callback = {
+        __raw = ''
+          function(ev)
+            require("which-key").add({
+              { "ds", group = "Delete surrounding", buffer = ev.buf },
+              { "cs", group = "Change surrounding", buffer = ev.buf },
+              { "ts", group = "Toggle", buffer = ev.buf },
+              { "ts$", desc = "Toggle inline/display math", buffer = ev.buf },
+              { "tse", desc = "Toggle environment", buffer = ev.buf },
+              { "tss", desc = "Toggle env star", buffer = ev.buf },
+              { "tsd", desc = "Toggle delimiter modifier", buffer = ev.buf },
+              { "tsf", desc = "Toggle fraction", buffer = ev.buf },
+              { "tsc", desc = "Toggle command star", buffer = ev.buf },
+              { "dse", desc = "Delete environment", buffer = ev.buf },
+              { "dsd", desc = "Delete delimiter", buffer = ev.buf },
+              { "dsc", desc = "Delete command", buffer = ev.buf },
+              { "cse", desc = "Change environment", buffer = ev.buf },
+              { "csd", desc = "Change delimiter", buffer = ev.buf },
+              { "csc", desc = "Change command", buffer = ev.buf },
+            })
+          end
+        '';
+      };
     }
     {
       desc = "Prevent nvim-tree window from scrolling horizontally";
