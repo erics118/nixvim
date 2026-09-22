@@ -24,23 +24,6 @@
   # loaded eagerly; lazy-loading skips the after/plugin hook that registers the cmp source
   plugins.cmp-vimtex.enable = true;
 
-  # conceal serves vimtex's syntax conceal; reveal the line under the cursor for editing
-  autoCmd = [
-    {
-      desc = "Enable vimtex conceal in tex buffers";
-      event = "FileType";
-      pattern = "tex";
-      callback = {
-        __raw = ''
-          function()
-            vim.wo.conceallevel = 2
-            vim.wo.concealcursor = ""
-          end
-        '';
-      };
-    }
-  ];
-
   extraConfigLua = ''
     local ls = require("luasnip")
     local s = ls.snippet
