@@ -42,7 +42,6 @@
     ./plugins/nvim-tree.nix
     ./plugins/grug-far.nix
     ./plugins/telescope.nix
-    ./plugins/terminal.nix
     ./plugins/treesitter.nix
     ./plugins/which-key.nix
   ];

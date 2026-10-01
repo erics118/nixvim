@@ -59,7 +59,7 @@ in
     (mkMap "n" "N" "Nzzzv" "Previous search result and center")
 
     # NvimTree
-    (mkMap [ "n" "i" ] "<C-b>" "<Cmd>NvimTreeToggle<CR>" "Toggle file tree")
+    (mkMap "n" "<leader>te" "<Cmd>NvimTreeToggle<CR>" "Toggle file tree")
 
     # Toggle word wrap
     (mkMap "n" "<leader>tw" "<cmd>set wrap!<CR>" "Toggle word wrap")

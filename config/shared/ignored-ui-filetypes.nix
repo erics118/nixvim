@@ -9,6 +9,5 @@
   "NeogitStatus"
   "NvimTree"
   "TelescopePrompt"
-  "toggleterm"
   "Trouble"
 ]
