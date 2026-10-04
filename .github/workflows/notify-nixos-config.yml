@@ -3,6 +3,10 @@ name: notify-nixos-config
 on:
   push:
     branches: [main]
+    # docs don't change the nixvim build
+    paths-ignore: ["**.md"]
+
+permissions: {}
 
 jobs:
   dispatch:

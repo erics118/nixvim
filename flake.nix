@@ -19,7 +19,6 @@
       systems = [
         "x86_64-linux"
         "aarch64-linux"
-        "x86_64-darwin"
         "aarch64-darwin"
       ];
 
@@ -109,7 +108,11 @@
               nixfmt.enable = true;
               nixfmt.strict = true;
               deadnix.enable = true;
-              statix.enable = true;
+              statix = {
+                enable = true;
+                # treefmt does not read statix.toml, so mirror it here
+                disabled-lints = [ "repeated_keys" ];
+              };
 
               prettier.enable = true;
               just.enable = true;
